@@ -9,10 +9,16 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity {
     public static Activity loginActivity;
@@ -21,6 +27,8 @@ public class LoginActivity extends AppCompatActivity {
     EditText editText_pw;
     Button button_login;
     Button button_signup;
+
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +48,23 @@ public class LoginActivity extends AppCompatActivity {
         button_login = findViewById(R.id.button_login);
         button_signup = findViewById(R.id.button_signup);
 
+        mAuth = FirebaseAuth.getInstance();
+
+
         button_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "로그인 버튼 클릭", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "로그인 버튼 클릭", Toast.LENGTH_SHORT).show();
+                mAuth.signInWithEmailAndPassword(editText_id.getText().toString(),editText_pw.getText().toString()).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(task.isSuccessful()){
+                            Toast.makeText(getApplicationContext(),"로그인 성공",Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(getApplicationContext(),"로그인 실패",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
 
             }
         });
