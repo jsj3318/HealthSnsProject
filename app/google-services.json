@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "562747234457",
+    "project_id": "healthsnsproject1",
+    "storage_bucket": "healthsnsproject1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:562747234457:android:2c490c241a7c08bdd78008",
+        "android_client_info": {
+          "package_name": "com.example.healthsnsproject"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyColE0i40pXWypy8RsXJp1fzA9iyp85nH8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
