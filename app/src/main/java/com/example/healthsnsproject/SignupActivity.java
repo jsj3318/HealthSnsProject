@@ -77,6 +77,8 @@ public class SignupActivity extends AppCompatActivity {
                 }
                 //닉네임 중복 검사
 
+
+
                 //닉네임 통과
                 else {
                     textView_name_error.setText("");
@@ -88,6 +90,8 @@ public class SignupActivity extends AppCompatActivity {
                     isError = true;
                 }
                 //아이디 중복 검사
+
+
 
                 //아이디 통과
                 else {
@@ -126,12 +130,15 @@ public class SignupActivity extends AppCompatActivity {
                     //데이터 베이스 계정 정보 추가 부분
 
 
-                    mAuth.createUserWithEmailAndPassword(editText_id.getText().toString(),editText_pw.getText().toString()).addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
+                    mAuth.createUserWithEmailAndPassword(editText_id.getText().toString(),
+                            editText_pw.getText().toString())
+                            .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
 
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(task.isSuccessful()){
                                 FirebaseUser user = mAuth.getCurrentUser();
+
                                 Toast.makeText(getApplicationContext(), "계정 생성 완료", Toast.LENGTH_SHORT).show();
                                 finish();
                             }else {
@@ -146,8 +153,6 @@ public class SignupActivity extends AppCompatActivity {
 
                     });
 
-
-                    //회원가입 액티비티 종료
 
                 }
 

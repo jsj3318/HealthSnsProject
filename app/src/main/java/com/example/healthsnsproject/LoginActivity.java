@@ -54,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
         button_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(getApplicationContext(), "로그인 버튼 클릭", Toast.LENGTH_SHORT).show();
+
                 mAuth.signInWithEmailAndPassword(editText_id.getText().toString(),editText_pw.getText().toString()).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -72,8 +72,6 @@ public class LoginActivity extends AppCompatActivity {
         button_signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(getApplicationContext(), "회원가입 버튼 클릭 -> 회원가입 창으로 이동", Toast.LENGTH_SHORT).show();
-
                 Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
                 startActivity(intent);
 
