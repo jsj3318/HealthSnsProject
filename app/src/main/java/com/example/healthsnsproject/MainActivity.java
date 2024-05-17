@@ -10,7 +10,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
-    LoginActivity loginActivity;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,18 +24,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        loginActivity = (LoginActivity) LoginActivity.loginActivity;
+
 
     }
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-
-        if(loginActivity.isDestroyed() == false){   //로그인 액티비티 쌓여있으면 제거
-            loginActivity.finish();
-        }
-
-    }
 
 }

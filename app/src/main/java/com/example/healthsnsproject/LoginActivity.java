@@ -60,6 +60,15 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
                             Toast.makeText(getApplicationContext(),"로그인 성공",Toast.LENGTH_SHORT).show();
+                            //로그인 정보 (자신에 대한 정보) 메인 액티비티로 보내줘야함
+
+
+
+                            //메인 액티비티로 이동
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(intent);
+                            //로그인 액티비티는 제거
+                            finish();
                         }else{
                             Toast.makeText(getApplicationContext(),"로그인 실패",Toast.LENGTH_SHORT).show();
                         }
@@ -69,14 +78,21 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        button_signup.setOnClickListener(new View.OnClickListener() {
+        button_signup.setOnClickListener(new View.OnClickListener() {   //회원가입 버튼 클릭 시 회원가입 액티비티로 이동
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
-                startActivity(intent);
-
             }
         });
 
+
     }
+
+    //테스트 버튼에 넣을 메인으로 넘어가는 함수
+    public void test_button_func(View v) {
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
 }
