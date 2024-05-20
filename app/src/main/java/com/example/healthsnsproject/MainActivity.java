@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -19,6 +20,9 @@ import com.google.android.material.navigation.NavigationBarView;
 
 public class MainActivity extends AppCompatActivity
         implements Fragment_main_4.OnFragmentInteractionListener {
+    private long backPressedTime;
+
+
     //프래그먼트 객체 생성
     private Fragment_main_1 fragment_main_1;
     private Fragment_main_2 fragment_main_2;
@@ -85,6 +89,19 @@ public class MainActivity extends AppCompatActivity
         );
 
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (backPressedTime + 2000 > System.currentTimeMillis()) {
+            // 2초 이내에 다시 뒤로가기 버튼을 누르면 앱 종료
+            super.onBackPressed();
+            finish();
+        } else {
+            // 처음 뒤로가기 버튼을 눌렀을 때 안내 메시지를 표시
+            Toast.makeText(this, "한 번 더 누르면 앱을 종료합니다.", Toast.LENGTH_SHORT).show();
+        }
+        backPressedTime = System.currentTimeMillis();
     }
 
     private void showFragment(Fragment fragment) {  //전달 받은 프래그먼트를 표시하고 기존 표시되는 프래그먼트 숨김
