@@ -1,5 +1,7 @@
 package com.example.healthsnsproject;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -15,7 +17,8 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements Fragment_main_4.OnFragmentInteractionListener {
     //프래그먼트 객체 생성
     private Fragment_main_1 fragment_main_1;
     private Fragment_main_2 fragment_main_2;
@@ -89,6 +92,26 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().hide(activeFragment).show(fragment).commit();
             activeFragment = fragment;
         }
+    }
+
+    public void Logout() {  
+        //4번째 프래그먼트에 있는 로그아웃 버튼 클릭 시 리스너로 호출되는 로그아웃 함수
+        //경고 알림 박스 나오고 로그아웃 할 건지 선택시킨 후 로그인 액티비티로 돌아감
+        new AlertDialog.Builder(this)
+                .setTitle("로그아웃")
+                .setMessage("로그아웃 하시겠습니까?")
+                .setPositiveButton("예", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+                .setNegativeButton("아니오", null)
+                .show();
+
     }
 
 
