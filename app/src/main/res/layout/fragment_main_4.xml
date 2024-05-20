@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragment_main_4">
+    android:orientation="vertical"
+    tools:context=".Fragment_main_4"
+    >
 
-    <TextView
+    <com.example.healthsnsproject.Profile_view
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="내 정보 화면 프래그먼트" />
+        android:layout_height="wrap_content"
+        android:id="@+id/profile_view_in_fragment4"
+        />
 
-</FrameLayout>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="로그아웃"
+        />
+
+</LinearLayout>
