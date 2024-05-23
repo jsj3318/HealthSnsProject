@@ -3,11 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragment_main_1">
+    tools:context=".Fragment_main_1"
+    >
 
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="홈 화면 프래그먼트" />
+        android:id="@+id/recyclerView"
+
+        />
+
 
 </FrameLayout>
