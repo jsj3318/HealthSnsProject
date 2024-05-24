@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 
 public class Fragment_main_1 extends Fragment {
 
+    SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recyclerView;
     Post_adapter adapter;
     ArrayList<Post_item> postList;
@@ -52,7 +54,9 @@ public class Fragment_main_1 extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main_1, container, false);
 
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
         recyclerView = view.findViewById(R.id.recyclerView);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 
         adapter = new Post_adapter();
@@ -64,14 +68,25 @@ public class Fragment_main_1 extends Fragment {
 
         }
 
-
-
         recyclerView.setAdapter(adapter);
 
         adapter.setOnPostItemClickListener(new Post_adapter.OnPostItemClickListener() {
             @Override
             public void onItemClick(Post_item post_item) {
                 Toast.makeText(getActivity().getApplicationContext(), post_item.name, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        //리프레쉬 레이아웃 리스너 설정
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //새로고침 했을 때 이벤트
+                //데이터 다시 불러오기
+
+
+                //데이터 로드 완료
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
 
