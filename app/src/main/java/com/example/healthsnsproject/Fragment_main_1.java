@@ -13,11 +13,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link Fragment_main_1#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class Fragment_main_1 extends Fragment {
 
     RecyclerView recyclerView;
@@ -61,6 +56,14 @@ public class Fragment_main_1 extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 
         adapter = new Post_adapter();
+        //예시용 아이템 넣기
+        for (int i=1; i<6; i++){
+            adapter.addItem(new Post_item(null, "이름 " + i, "2025-06-06 12:30:30",
+                    "본문 " + i + " aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    (i%2 == 1), i, i));
+
+        }
+
 
 
         recyclerView.setAdapter(adapter);

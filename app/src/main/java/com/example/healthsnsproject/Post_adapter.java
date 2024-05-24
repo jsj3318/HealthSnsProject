@@ -21,7 +21,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Post_adapter extends RecyclerView.Adapter<Post_adapter.Post_viewHolder> {
 
-    private ArrayList<Post_item> postList;
+    private ArrayList<Post_item> postList = new ArrayList<Post_item>();
     OnPostItemClickListener onPostItemClickListener;
 
     public interface OnPostItemClickListener {
@@ -33,6 +33,9 @@ public class Post_adapter extends RecyclerView.Adapter<Post_adapter.Post_viewHol
         this.onPostItemClickListener = listener;
     }
 
+    public void addItem(Post_item post) {
+        postList.add(post);
+    }
     public void setList(ArrayList<Post_item> postList) {
         this.postList = postList;
     }
@@ -89,10 +92,10 @@ public class Post_adapter extends RecyclerView.Adapter<Post_adapter.Post_viewHol
             //circleImageView_profile_picture.setImageURI(post.profile_picture_uri);
             textView_name.setText(post.name);
 
-            //본문 내용이 30자가 넘으면 잘라서 표시
+            //본문 내용이 40자가 넘으면 잘라서 표시
             String content = post.text;
-            if (content.length() > 30) {
-                content = content.substring(0, 30) + "...";
+            if (content.length() > 40) {
+                content = content.substring(0, 40) + "...";
             }
             textView_text.setText(content);
 
