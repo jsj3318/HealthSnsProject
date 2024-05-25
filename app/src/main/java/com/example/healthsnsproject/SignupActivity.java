@@ -19,6 +19,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
 
 public class SignupActivity extends AppCompatActivity {
     EditText editText_name;
@@ -34,6 +39,8 @@ public class SignupActivity extends AppCompatActivity {
     Button button_create_account;
 
     private FirebaseAuth mAuth;
+    DatabaseReference Reference;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -137,10 +144,40 @@ public class SignupActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(task.isSuccessful()){
-                                FirebaseUser user = mAuth.getCurrentUser();
 
-                                Toast.makeText(getApplicationContext(), "계정 생성 완료", Toast.LENGTH_SHORT).show();
-                                finish();
+                                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                DatabaseReference myRef = database.getReference("USERINFO");
+
+                                //myRef.setValue("Hello, World!");
+
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(editText_name.getText().toString()).build();
+                                user.updateProfile(profileUpdates);
+                                HashMap<String, Object> hashMap = new HashMap<>();
+                                hashMap.put("name",editText_name.getText().toString() );
+                                hashMap.put("email", editText_id.getText().toString());
+                                hashMap.put("DisplayName",user.getDisplayName().toString() );
+
+
+
+                                myRef.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()){
+                                            Toast.makeText(getApplicationContext(), "계정 생성 완료", Toast.LENGTH_SHORT).show();
+                                            finish();
+                                        }
+                                    }
+                                });
+
+
+
+
+
+
+
+
+
                             }else {
                                 // If sign in fails, display a message to the user.
 
