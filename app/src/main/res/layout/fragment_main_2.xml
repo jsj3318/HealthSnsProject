@@ -26,7 +26,7 @@
             android:orientation="vertical" >
 
             <EditText
-                android:id="@+id/post_content"
+                android:id="@+id/post_upload_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?android:attr/editTextBackground"
@@ -36,7 +36,7 @@
                 android:padding="16dp" />
 
             <ImageView
-                android:id="@+id/photo_image_view"
+                android:id="@+id/imageView_upload"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:layout_margin="10dp"
@@ -48,7 +48,7 @@
 
 
     <Button
-        android:id="@+id/post_button"
+        android:id="@+id/button_upload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
