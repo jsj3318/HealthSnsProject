@@ -5,18 +5,9 @@
     android:layout_height="match_parent"
     tools:context=".Fragment_main_2">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_upload"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:title="새 게시글 작성"
-        android:elevation="4dp" />
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar_upload"
         android:padding="8dp"
         >
 
