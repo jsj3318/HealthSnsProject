@@ -1,13 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Fragment_main_2">
 
-    <TextView
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_upload"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:title="새 게시글 작성"
+        android:elevation="4dp" />
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="게시 화면 프래그먼트" />
+        android:layout_below="@id/toolbar_upload"
+        android:padding="8dp"
+        >
 
-</FrameLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <EditText
+                android:id="@+id/post_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?android:attr/editTextBackground"
+                android:gravity="top|start"
+                android:hint="내용을 입력하세요"
+                android:minHeight="150dp"
+                android:padding="16dp" />
+
+            <ImageView
+                android:id="@+id/photo_image_view"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_margin="10dp"
+                android:contentDescription="사진 추가"
+                android:scaleType="centerCrop"
+                android:src="@drawable/add_image" />
+        </LinearLayout>
+    </ScrollView>
+
+
+    <Button
+        android:id="@+id/post_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:text="게시"
+        android:contentDescription="게시"
+        android:backgroundTint="@color/colorPrimary"
+        android:textColor="@android:color/white"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:minHeight="48dp"
+        android:elevation="4dp" />
+
+</RelativeLayout>

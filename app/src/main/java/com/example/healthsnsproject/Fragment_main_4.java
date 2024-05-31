@@ -12,11 +12,6 @@ import android.widget.Button;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link Fragment_main_4#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class Fragment_main_4 extends Fragment {
 
     private  OnFragmentInteractionListener mListener;
