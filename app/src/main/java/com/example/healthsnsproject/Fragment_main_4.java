@@ -1,9 +1,13 @@
 package com.example.healthsnsproject;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -52,13 +56,29 @@ public class Fragment_main_4 extends Fragment {
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // 프로필 이미지 선택하는 인텐트 반환 받기
+        if (requestCode == 1 && resultCode == getActivity().RESULT_OK && data != null) {
+            Uri selectedImageUri = data.getData();
+            if (selectedImageUri != null) {
+                profileView.setImage(selectedImageUri);
+                // 이미지 uri 파이어 베이스에 업로드
+                //uploadImageToFirebase(selectedImageUri);
+            }
+        }
+    }
+
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main_4, container, false);
 
         profileView = view.findViewById(R.id.profile_view_in_fragment4);
 
-        //파이어베이스 유저 정보 불러와서 프로필 뷰 메서드에 넣기
+        //파이어베이스 유저 정보 불러와서 프로필 뷰 메서드로 넣기
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
 
@@ -72,6 +92,35 @@ public class Fragment_main_4 extends Fragment {
                 profileView.setId(email);
             }
         }
+
+        //프로필 이미지 클릭 리스너
+        profileView.setImageView_clickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("프로필 이미지 변경")
+                        .setMessage("프로필 이미지를 변경하시겠습니까?")
+                        .setPositiveButton("예", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // 갤러리에서 이미지 선택하는 인텐트 시작
+                                Intent intent = new Intent(Intent.ACTION_PICK);
+                                intent.setType("image/*");
+                                startActivityForResult(intent, 1);
+                            }
+                        })
+                        .setNegativeButton("아니오", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // 사용자가 이미지 변경을 취소한 경우 아무 작업도 하지 않음
+                            }
+                        })
+                        .show();
+            }
+        });
+
+
+
 
         //로그아웃 버튼 이벤트
         Button button = view.findViewById(R.id.button_logout);

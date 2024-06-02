@@ -54,4 +54,8 @@ public class Profile_view extends LinearLayout {
             textView_profile_id.setText(id);
     }
 
+    public void setImageView_clickListener(OnClickListener listener){
+        imageView_profile.setOnClickListener(listener);
+    }
+
 }
