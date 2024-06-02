@@ -1,26 +1,28 @@
 package com.example.healthsnsproject;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link Fragment_main_2#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class Fragment_main_2 extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final int REQUEST_CODE_PICK_IMAGE = 1;
+    ImageView photoView;    //사진 업로드 뷰
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
@@ -28,15 +30,7 @@ public class Fragment_main_2 extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Fragment_main_2.
-     */
-    // TODO: Rename and change types and number of parameters
+
     public static Fragment_main_2 newInstance(String param1, String param2) {
         Fragment_main_2 fragment = new Fragment_main_2();
         Bundle args = new Bundle();
@@ -58,7 +52,53 @@ public class Fragment_main_2 extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_main_2, container, false);
+        View view = inflater.inflate(R.layout.fragment_main_2, container, false);
+
+        EditText postContent = view.findViewById(R.id.post_upload_content);
+        photoView = view.findViewById(R.id.imageView_upload);
+        Button uploadButton = view.findViewById(R.id.button_upload);
+
+        photoView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //이미지 뷰 눌렀을 때 사진 한장 선택하기
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                startActivityForResult(intent, REQUEST_CODE_PICK_IMAGE);
+
+            }
+        });
+
+        uploadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //업로드 버튼 눌렀을 때 작성한 내용들 게시글 데이터베이스에 업로드
+
+
+            }
+        });
+
+
+        return view;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        //사진 선택 반환 받아오는 곳
+        if(requestCode == REQUEST_CODE_PICK_IMAGE && resultCode == getActivity().RESULT_OK) {
+            if(data != null){
+                Uri selectedImageUri = data.getData();
+                if(selectedImageUri != null) {
+                    //선택한 사진을 이미지 뷰에 적용해서 표시
+                    photoView.setImageURI(selectedImageUri);
+                    //업로드 할때 필요하면 추가로 이미지 uri 저장하는 코드 추가 가능
+
+
+                }
+            }
+        }
+
     }
 }

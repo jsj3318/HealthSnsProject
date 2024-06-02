@@ -109,11 +109,5 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    //테스트 버튼에 넣을 메인으로 넘어가는 함수
-    public void test_button_func(View v) {
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        startActivity(intent);
-        finish();
-    }
 
 }
