@@ -66,14 +66,6 @@ public class Fragment_main_4 extends Fragment {
             String name = user.getDisplayName();
             String email = user.getEmail();
 
-            // Check if user's email is verified
-            boolean emailVerified = user.isEmailVerified();
-
-            // The user's ID, unique to the Firebase project. Do NOT use this value to
-            // authenticate with your backend server, if you have one. Use
-            // FirebaseUser.getIdToken() instead.
-            String uid = user.getUid();
-
             if(profileView != null){
                 profileView.setImage(photoUrl);
                 profileView.setName(name);

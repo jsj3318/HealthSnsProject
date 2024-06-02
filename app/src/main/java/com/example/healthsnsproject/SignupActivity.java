@@ -145,38 +145,26 @@ public class SignupActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(task.isSuccessful()){
 
-                                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                DatabaseReference myRef = database.getReference("USERINFO");
-
-                                //myRef.setValue("Hello, World!");
-
                                 FirebaseUser user = mAuth.getCurrentUser();
-                                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(editText_name.getText().toString()).build();
-                                user.updateProfile(profileUpdates);
-                                HashMap<String, Object> hashMap = new HashMap<>();
-                                hashMap.put("name",editText_name.getText().toString() );
-                                hashMap.put("email", editText_id.getText().toString());
-                                hashMap.put("DisplayName",user.getDisplayName().toString() );
+                                if( user != null ){
+                                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                            .setDisplayName(editText_name.getText().toString())
+                                            .build();
 
-
-
-                                myRef.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()){
-                                            Toast.makeText(getApplicationContext(), "계정 생성 완료", Toast.LENGTH_SHORT).show();
-                                            finish();
+                                    user.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                // Additional user info can be stored in the database here
+                                                Toast.makeText(getApplicationContext(), "계정 생성 완료", Toast.LENGTH_SHORT).show();
+                                                finish();
+                                            } else {
+                                                Toast.makeText(getApplicationContext(), "프로필 업데이트 실패", Toast.LENGTH_SHORT).show();
+                                            }
                                         }
-                                    }
-                                });
+                                    });
 
-
-
-
-
-
-
-
+                                }
 
                             }else {
                                 // If sign in fails, display a message to the user.
