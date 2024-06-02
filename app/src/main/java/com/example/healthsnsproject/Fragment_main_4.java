@@ -1,6 +1,7 @@
 package com.example.healthsnsproject;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -10,9 +11,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class Fragment_main_4 extends Fragment {
+
+    private Profile_view profileView;
 
     private  OnFragmentInteractionListener mListener;
 
@@ -49,6 +55,31 @@ public class Fragment_main_4 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main_4, container, false);
+
+        profileView = view.findViewById(R.id.profile_view_in_fragment4);
+
+        //파이어베이스 유저 정보 불러와서 프로필 뷰 메서드에 넣기
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+
+            Uri photoUrl = user.getPhotoUrl();
+            String name = user.getDisplayName();
+            String email = user.getEmail();
+
+            // Check if user's email is verified
+            boolean emailVerified = user.isEmailVerified();
+
+            // The user's ID, unique to the Firebase project. Do NOT use this value to
+            // authenticate with your backend server, if you have one. Use
+            // FirebaseUser.getIdToken() instead.
+            String uid = user.getUid();
+
+            if(profileView != null){
+                profileView.setImage(photoUrl);
+                profileView.setName(name);
+                profileView.setId(email);
+            }
+        }
 
         //로그아웃 버튼 이벤트
         Button button = view.findViewById(R.id.button_logout);
