@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -75,7 +76,6 @@ public class Fragment_main_4 extends Fragment {
             if (selectedImageUri != null) {
                 profileView.setImage(selectedImageUri);
                 // 이미지 uri 파이어 베이스에 업로드
-                //uploadImageToFirebase(selectedImageUri);
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 StorageReference storageRef = storage.getReference();
                 StorageReference mountainsRef = storageRef.child("images/"+user.getDisplayName()+"/"+"profile/"+selectedImageUri.getLastPathSegment());//.child("user.jpg");
@@ -97,16 +97,15 @@ public class Fragment_main_4 extends Fragment {
                     public void onComplete(@NonNull Task<Uri> task) {
                         if (task.isSuccessful()) {
                             Uri downloadUri = task.getResult();
-                            String downloadUrl1 = downloadUri.toString();
                             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                    .setDisplayName(user.getDisplayName())//+"2"
-                                    .setPhotoUri(Uri.parse(downloadUrl1))
+                                    .setPhotoUri(downloadUri)
                                     .build();
 
                             user.updateProfile(profileUpdates);
+
+                            Toast.makeText(getContext(), "이미지 업로드 성공", Toast.LENGTH_SHORT).show();
                         } else {
-                            // Handle failures
-                            // ...
+                            Toast.makeText(getContext(), "이미지 업로드 실패", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -139,6 +138,7 @@ public class Fragment_main_4 extends Fragment {
                 profileView.setImage(photoUrl);
                 profileView.setName(name);
                 profileView.setId(email);
+
             }
         }
 

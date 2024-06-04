@@ -66,22 +66,13 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
                             Toast.makeText(getApplicationContext(),"로그인 성공",Toast.LENGTH_SHORT).show();
-                            //로그인 정보 (자신에 대한 정보) 메인 액티비티로 보내줘야함
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            if(user != null){
-                             //   UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(editText_id.getText().toString()).build();
-                             //   user.updateProfile(profileUpdates);
-                                String name = user.getDisplayName();
-                                String email = user.getEmail();
-                                Uri photoUrl = user.getPhotoUrl();
-                            }
-                            FirebaseDatabase database = FirebaseDatabase.getInstance();
-                            DatabaseReference myRef = database.getReference("message");
 
-                            myRef.setValue(user.getPhotoUrl().toString());
+                            //FirebaseUser user = mAuth.getCurrentUser();
+                            //FirebaseDatabase database = FirebaseDatabase.getInstance();
+                            //DatabaseReference myRef = database.getReference("message");
 
-
-
+                            //myRef.setValue(user.getPhotoUrl().toString() + "    " + user.getDisplayName().toString());
+                            //url 출력 테스트용
 
                             //메인 액티비티로 이동
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);

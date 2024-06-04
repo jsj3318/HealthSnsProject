@@ -19,7 +19,7 @@
     <item
         android:id="@+id/tab3"
         android:enabled="true"
-        android:icon="@android:drawable/star_big_on"
+        android:icon="@drawable/ic_star"
         android:title="팔로우"
         app:showAsAction="ifRoom" />
 

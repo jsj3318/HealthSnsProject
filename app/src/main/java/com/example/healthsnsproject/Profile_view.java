@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.bumptech.glide.Glide;
+
 
 public class Profile_view extends LinearLayout {
     // 프로필 카드 뷰 클래스
@@ -40,8 +42,14 @@ public class Profile_view extends LinearLayout {
     }
 
     public void setImage(Uri photoUri) {   //이미지 uri 전달 해서 프로필 바 이미지 변경 하는 함수
-        if(photoUri != null)
-            imageView_profile.setImageURI(photoUri); //?
+            //깃허브 glide 함수 사용 - 이미지 뷰에 이미지 쉽고 부드럽게 넣어주는 라이브러리
+        Glide.with(this)
+                .load(photoUri)
+                .placeholder(R.drawable.ic_loading) // 이미지 로딩중 보여주는 이미지
+                .error(R.drawable.ic_unknown)       // 이미지 로딩 실패 시 보여주는 이미지
+                .fallback(R.drawable.ic_unknown)    // 이미지가 없을 시 보여주는 이미지
+                .into(imageView_profile);
+
     }
 
     public void setName(String name) {  //스트링 전달 해서 프로필 바 닉네임 변경 하는 함수
