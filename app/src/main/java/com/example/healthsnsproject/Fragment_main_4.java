@@ -1,5 +1,7 @@
 package com.example.healthsnsproject;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,13 +12,21 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -32,7 +42,7 @@ public class Fragment_main_4 extends Fragment {
 
     private String mParam1;
     private String mParam2;
-
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     public Fragment_main_4() {
         // Required empty public constructor
     }
@@ -66,6 +76,45 @@ public class Fragment_main_4 extends Fragment {
                 profileView.setImage(selectedImageUri);
                 // 이미지 uri 파이어 베이스에 업로드
                 //uploadImageToFirebase(selectedImageUri);
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                StorageReference storageRef = storage.getReference();
+                StorageReference mountainsRef = storageRef.child("images/"+user.getDisplayName()+"/"+"profile/"+selectedImageUri.getLastPathSegment());//.child("user.jpg");
+                UploadTask uploadTask = mountainsRef.putFile(selectedImageUri);
+
+
+                Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                    @Override
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                        if (!task.isSuccessful()) {
+                            throw task.getException();
+                        }
+
+                        // Continue with the task to get the download URL
+                        return mountainsRef.getDownloadUrl();
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (task.isSuccessful()) {
+                            Uri downloadUri = task.getResult();
+                            String downloadUrl1 = downloadUri.toString();
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                    .setDisplayName(user.getDisplayName())//+"2"
+                                    .setPhotoUri(Uri.parse(downloadUrl1))
+                                    .build();
+
+                            user.updateProfile(profileUpdates);
+                        } else {
+                            // Handle failures
+                            // ...
+                        }
+                    }
+                });
+
+
+
+
+
             }
         }
     }

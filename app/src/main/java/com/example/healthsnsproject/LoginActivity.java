@@ -78,7 +78,7 @@ public class LoginActivity extends AppCompatActivity {
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
                             DatabaseReference myRef = database.getReference("message");
 
-                            myRef.setValue(user.getDisplayName());
+                            myRef.setValue(user.getPhotoUrl().toString());
 
 
 
