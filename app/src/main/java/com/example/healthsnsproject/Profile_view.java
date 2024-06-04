@@ -41,7 +41,7 @@ public class Profile_view extends LinearLayout {
 
     public void setImage(Uri photoUri) {   //이미지 uri 전달 해서 프로필 바 이미지 변경 하는 함수
         if(photoUri != null)
-            imageView_profile.setImageURI(photoUri);
+            imageView_profile.setImageURI(photoUri); //?
     }
 
     public void setName(String name) {  //스트링 전달 해서 프로필 바 닉네임 변경 하는 함수
