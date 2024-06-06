@@ -24,7 +24,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.HashMap;
 import java.util.Map;
-//import java.util.UUID;
+import java.util.UUID;
 
 public class Fragment_main_2 extends Fragment {
     private ImageView imageView;
@@ -82,7 +82,9 @@ public class Fragment_main_2 extends Fragment {
         // 이미지가 있는 경우
         if (imageUri != null) {
             StorageReference fileReference = storage.getReference()
-                    .child("uploads/"+user.getDisplayName()+"/"+"profile/"+imageUri.getLastPathSegment());
+                    .child("uploads/"+user.getDisplayName()
+                            +"/"+"postImages/"+UUID.randomUUID().toString());
+            // 계정이름 기준으로 무작위 UUID 경로생성 (충돌 및 덮어쓰기 케어)
 
             fileReference.putFile(imageUri)
                     .addOnSuccessListener(taskSnapshot -> fileReference.getDownloadUrl().addOnSuccessListener(uri -> {
