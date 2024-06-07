@@ -1,33 +1,105 @@
 package com.example.healthsnsproject;
 
-import android.widget.ImageButton;
-import android.widget.TextView;
-
-import androidx.viewpager2.widget.ViewPager2;
-
-import org.w3c.dom.Text;
-
-import de.hdodenhof.circleimageview.CircleImageView;
-
 public class Post_item {
+    private String postProfileImageUri;
+    private String postImageUri;
+    private String postUsername;
+    private String date;
+    private String postContent;
 
-    String profile_picture_uri;
-    String name;
-    String date;
-    //페이저 내용물 추가 필요
+    private String commentProfileImageUri;
+    private String commentUsername;
+    private String comment;
+    private Boolean likeState;
+    private int likeCount;
+    private int commentCount;
 
-    String text;
-    Boolean likeState;
-    int likeCount;
-    int commentCount;
+    public Post_item(String postProfileImageUri, String postImageUri, String postUsername, String date, String postContent,
+        String commentProfileImageUri, String commentUsername, String comment, Boolean likeState, int likeCount, int commentCount) {
 
-    public Post_item(String profile_picture_uri, String name, String date, String text, Boolean likeState, int likeCount, int commentCount) {
-        this.profile_picture_uri = profile_picture_uri;
-        this.name = name;
+        setPostProfileImageUri(postProfileImageUri);
+        setPostImageUri(postImageUri);
+        setPostUsername(postUsername);
+        setDate(date);
+        setPostContent(postContent);
+        setCommentProfileImageUri(commentProfileImageUri);
+        setCommentUsername(commentUsername);
+        setComment(comment);
+        setLikeState(likeState);
+        setLikeCount(likeCount);
+        setCommentCount(commentCount);
+    }
+
+    public Post_item(String postProfileImageUri, String postImageUri, String postUsername, String date, String postContent) {
+        setPostProfileImageUri(postProfileImageUri);
+        setPostImageUri(postImageUri);
+        setPostUsername(postUsername);
+        setDate(date);
+        setPostContent(postContent);
+    }
+
+    // getters & setters 방식으로 변경
+    public String getPostProfileImageUri() {
+        return postProfileImageUri;
+    }
+    public void setPostProfileImageUri(String postProfileImageUri) { this.postProfileImageUri = postProfileImageUri; }
+    public String getPostImageUri() { return postImageUri; }
+    public void setPostImageUri(String postImageUri) {
+        this.postImageUri = postImageUri;
+    }
+    public String getPostUsername() {
+        return postUsername;
+    }
+    public void setPostUsername(String postUsername) {
+        this.postUsername = postUsername;
+    }
+    public String getDate() {
+        return date;
+    }
+    public void setDate(String date) {
         this.date = date;
-        this.text = text;
+    }
+    public String getPostContent() {
+        return postContent;
+    }
+    public void setPostContent(String postContent) {
+        this.postContent = postContent;
+    }
+
+    public String getCommentProfileImageUri() {
+        return commentProfileImageUri;
+    }
+    public void setCommentProfileImageUri(String commentProfileImageUri) {
+        this.commentProfileImageUri = commentProfileImageUri;
+    }
+    public String getCommentUsername() {
+        return commentUsername;
+    }
+    public void setCommentUsername(String commentUsername) {
+        this.commentUsername = commentUsername;
+    }
+    public String getComment() {
+        return comment;
+    }
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+    public Boolean getLikeState() {
+        return likeState;
+    }
+    public void setLikeState(Boolean likeState) {
         this.likeState = likeState;
+    }
+    public int getLikeCount() {
+        return likeCount;
+    }
+    public void setLikeCount(int likeCount) {
         this.likeCount = likeCount;
+    }
+    public int getCommentCount() {
+        return commentCount;
+    }
+    public void setCommentCount(int commentCount) {
         this.commentCount = commentCount;
     }
 }

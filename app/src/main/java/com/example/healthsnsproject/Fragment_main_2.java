@@ -22,8 +22,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public class Fragment_main_2 extends Fragment {
@@ -33,7 +36,10 @@ public class Fragment_main_2 extends Fragment {
     private FirebaseStorage storage;
     private FirebaseFirestore firestore;
 
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private final String postUsername = Objects.requireNonNull(user).getDisplayName() + "  (@"
+                                    + Objects.requireNonNull(user.getEmail()).split("@")[0]+")";
+    private String postProfileImageUri = String.valueOf(user.getPhotoUrl());
 
     @Nullable
     @Override
@@ -71,10 +77,11 @@ public class Fragment_main_2 extends Fragment {
 
     // 파일 업로드 메서드
     private void uploadPost() {
-        String text = editText.getText().toString().trim();
+        String postContent = editText.getText().toString().trim();
+        String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
         // 이미지와 텍스트가 모두 없는 경우 처리
-        if (imageUri == null && text.isEmpty()) {
+        if (imageUri == null && postContent.isEmpty()) {
             Toast.makeText(getContext(), "업로드 할 내용이 없습니다!!", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -89,23 +96,27 @@ public class Fragment_main_2 extends Fragment {
             fileReference.putFile(imageUri)
                     .addOnSuccessListener(taskSnapshot -> fileReference.getDownloadUrl().addOnSuccessListener(uri -> {
                         String imageUrl = uri.toString();
-                        savePost(text, imageUrl);  // 이미지와 텍스트 저장
+
+                        savePost(imageUrl, postContent, date);  // 이미지와 텍스트 저장
                     }))
                     .addOnFailureListener(e -> Toast.makeText(getContext(), "업로드 실패: " + e.getMessage(), Toast.LENGTH_SHORT).show());
         } else {
-            savePost(text, null);  // 이미지 없이 텍스트만 저장
+            savePost(null, postContent, date);  // 이미지 없이 텍스트만 저장
         }
     }
 
     // Firestore에 게시글 저장 메서드
-    private void savePost(String text, String imageUrl) {
+    private void savePost(String postImageUrl, String postContent, String date) {
         Map<String, Object> post = new HashMap<>();
-        if (!text.isEmpty()) {
-            post.put("text", text);  // 텍스트가 있는 경우 추가
+        post.put("postProfileImageUri", postProfileImageUri);
+        post.put("postUsername", postUsername);
+        if (postImageUrl != null) {
+            post.put("postImageUrl", postImageUrl);  // 이미지 URL이 있는 경우 추가
         }
-        if (imageUrl != null) {
-            post.put("imageUrl", imageUrl);  // 이미지 URL이 있는 경우 추가
+        if (!postContent.isEmpty()) {
+            post.put("postContent", postContent);  // 텍스트가 있는 경우 추가
         }
+        post.put("date", date);
 
         firestore.collection("postings").add(post)
                 .addOnCompleteListener(task -> {
