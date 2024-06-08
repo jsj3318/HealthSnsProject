@@ -1,34 +1,18 @@
 package com.example.healthsnsproject;
 
 public class Post_item {
-    private String postProfileImageUri;
-    private String postImageUri;
-    private String postUsername;
-    private String date;
-    private String postContent;
+    private String postProfileImageUri = "";
+    private String postImageUri = "";
+    private String postUsername = "";
+    private String date = "";
+    private String postContent = "";
 
-    private String commentProfileImageUri;
-    private String commentUsername;
-    private String comment;
-    private Boolean likeState;
-    private int likeCount;
-    private int commentCount;
-
-    public Post_item(String postProfileImageUri, String postImageUri, String postUsername, String date, String postContent,
-        String commentProfileImageUri, String commentUsername, String comment, Boolean likeState, int likeCount, int commentCount) {
-
-        setPostProfileImageUri(postProfileImageUri);
-        setPostImageUri(postImageUri);
-        setPostUsername(postUsername);
-        setDate(date);
-        setPostContent(postContent);
-        setCommentProfileImageUri(commentProfileImageUri);
-        setCommentUsername(commentUsername);
-        setComment(comment);
-        setLikeState(likeState);
-        setLikeCount(likeCount);
-        setCommentCount(commentCount);
-    }
+    private String commentProfileImageUri = "";
+    private String commentUsername = "";
+    private String comment = "";
+    private Boolean likeState = false;
+    private int likeCount = 0;
+    private int commentCount = 0;
 
     public Post_item(String postProfileImageUri, String postImageUri, String postUsername, String date, String postContent) {
         setPostProfileImageUri(postProfileImageUri);
@@ -40,6 +24,22 @@ public class Post_item {
         setLikeState(false);
         setLikeCount(0);
         setCommentCount(0);
+    }
+
+    public Post_item() {
+        /*
+        setPostProfileImageUri(getPostProfileImageUri());
+        setPostImageUri(getPostImageUri());
+        setPostUsername(getPostUsername());
+        setDate(getDate());
+        setPostContent(getPostContent());
+        setCommentProfileImageUri(getCommentProfileImageUri());
+        setCommentUsername(getCommentUsername());
+        setComment(getComment());
+        */
+        setLikeState(getLikeState());
+        setLikeCount(getLikeCount());
+        setCommentCount(getCommentCount());
     }
 
     // getters & setters 방식으로 변경

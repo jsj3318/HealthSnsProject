@@ -78,7 +78,8 @@ public class Fragment_main_1 extends Fragment {
         firestore.collection("postings")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    List<Post_item> posts = new ArrayList<>();
+                    List<Post_item> postList = new ArrayList<>();
+                    Post_item post = new Post_item();
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                         String postProfileImageUri = document.getString("postProfileImageUri");
                         String postImageUri = document.getString("postImageUri");
@@ -86,24 +87,19 @@ public class Fragment_main_1 extends Fragment {
                         String date = document.getString("date");
                         String postContent = document.getString("postContent");
 
-                        // 나중에 채워넣음
-                        //String commentProfileImageUri = "";
-                        //String commentUsername = "";
-                        //String comment = "";
-                        //Boolean likeState = Post_item.getLikeState();
-                        //int likeCount = Post_item.getLikeCount();
-                        //int commentCount = Post_item.getCommentCount();
+                        post.setPostProfileImageUri(postProfileImageUri);
+                        post.setPostImageUri(postImageUri);
+                        post.setPostUsername(postUsername);
+                        post.setDate(date);
+                        post.setPostContent(postContent);
+                        post.setLikeState(post.getLikeState());
+                        post.setLikeCount(post.getLikeCount());
+                        post.setCommentCount(post.getCommentCount());
 
-                        if (postImageUri != null || postContent != null) {
-                            if(postImageUri == null){ postProfileImageUri = ""; }
-                            if(postContent == null){ postContent = ""; }
-
-                            Post_item post = new Post_item(postProfileImageUri, postImageUri, postUsername, date, postContent);
-                            posts.add(post);
-                        }
+                        postList.add(post);
                     }
 
-                    adapter.setList(posts);
+                    adapter.setList(postList);
                     adapter.notifyDataSetChanged();
                 })
                 .addOnFailureListener(e -> Toast.makeText(getContext(), "게시글을 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show());
