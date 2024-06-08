@@ -68,7 +68,7 @@ public class Post_adapter extends RecyclerView.Adapter<Post_adapter.Post_viewHol
 
     public class Post_viewHolder extends RecyclerView.ViewHolder {
         CircleImageView circleImageView_postProfileImage; //, circleImageView_commentProfileImage;
-        ImageView ImageView_postImage;
+        ImageView imageView_postImage;
         TextView textView_postUsername, textView_date, textView_postContent, textView_count; //textView_commentUsername, textView_comment, ;
         ImageButton imageButton_like, imageButton_comment;
 
@@ -76,7 +76,7 @@ public class Post_adapter extends RecyclerView.Adapter<Post_adapter.Post_viewHol
             super(view);
 
             circleImageView_postProfileImage = view.findViewById(R.id.postProfileImage);
-            ImageView_postImage = view.findViewById(R.id.postImage);
+            imageView_postImage = view.findViewById(R.id.postImage);
             textView_postUsername = view.findViewById(R.id.textView_postUsername);
             textView_date = view.findViewById(R.id.textView_date);
             textView_postContent = view.findViewById(R.id.textView_postContent);
@@ -100,6 +100,14 @@ public class Post_adapter extends RecyclerView.Adapter<Post_adapter.Post_viewHol
 
             textView_postUsername.setText(post.getPostUsername());
 
+            if(post.getPostProfileImageUri() != null){
+                Glide.with(context)
+                        .load(Uri.parse(post.getPostProfileImageUri()))
+                        .placeholder(R.drawable.ic_loading) // 이미지 로딩중 보여주는 이미지
+                        .error(R.drawable.ic_unknown)       // 이미지 로딩 실패 시 보여주는 이미지
+                        //.fallback(R.drawable.ic_unknown)    // 이미지가 없을 시 보여주는 이미지 -> 이미지 없으면 표시 안함
+                        .into(circleImageView_postProfileImage);
+            }
 
             //본문 이미지 뷰 이미지 넣기
             if(post.getPostImageUri() != null){
@@ -108,9 +116,8 @@ public class Post_adapter extends RecyclerView.Adapter<Post_adapter.Post_viewHol
                         .placeholder(R.drawable.ic_loading) // 이미지 로딩중 보여주는 이미지
                         .error(R.drawable.ic_unknown)       // 이미지 로딩 실패 시 보여주는 이미지
                         //.fallback(R.drawable.ic_unknown)    // 이미지가 없을 시 보여주는 이미지 -> 이미지 없으면 표시 안함
-                        .into(ImageView_postImage);
+                        .into(imageView_postImage);
             }
-
 
             // 본문 내용이 40자가 넘으면 잘라서 표시
             String content = post.getPostContent();

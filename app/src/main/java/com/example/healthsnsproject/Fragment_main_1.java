@@ -15,17 +15,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Fragment_main_1 extends Fragment {
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private Post_adapter adapter;
+    private ArrayList<Post_item> postList;
 
     public Fragment_main_1() {
         // Required empty public constructor
@@ -49,7 +48,7 @@ public class Fragment_main_1 extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 
         // 어댑터 초기화 및 예제 데이터 추가
-        ArrayList<Post_item> postList = new ArrayList<>();
+        postList = new ArrayList<>();
         adapter = new Post_adapter(getContext());
         adapter.setList(postList);
         recyclerView.setAdapter(adapter);
@@ -78,8 +77,6 @@ public class Fragment_main_1 extends Fragment {
         firestore.collection("postings")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    List<Post_item> postList = new ArrayList<>();
-
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                         Post_item post = new Post_item();
 
