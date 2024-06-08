@@ -119,6 +119,9 @@ public class Post_adapter extends RecyclerView.Adapter<Post_adapter.Post_viewHol
                         //.fallback(R.drawable.ic_unknown)    // 이미지가 없을 시 보여주는 이미지 -> 이미지 없으면 표시 안함
                         .into(imageView_postImage);
             }
+            else{
+                imageView_postImage.setImageDrawable(null);
+            }
 
             // 본문 내용이 40자가 넘으면 잘라서 표시
             String content = post.getPostContent();
@@ -129,7 +132,7 @@ public class Post_adapter extends RecyclerView.Adapter<Post_adapter.Post_viewHol
 
             // 날짜 문자열 포맷팅 하는 파트
             SimpleDateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-            SimpleDateFormat targetFormat = new SimpleDateFormat("yy년 M월 d일 a h시 mm분", Locale.getDefault());
+            SimpleDateFormat targetFormat = new SimpleDateFormat("yy년 M월 d일 a h시 m분 s초", Locale.getDefault());
             try {
                 Date date = originalFormat.parse(post.getDate());
                 String formattedDate = targetFormat.format(date);
