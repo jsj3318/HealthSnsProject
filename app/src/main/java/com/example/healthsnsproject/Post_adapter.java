@@ -100,12 +100,13 @@ public class Post_adapter extends RecyclerView.Adapter<Post_adapter.Post_viewHol
 
             textView_postUsername.setText(post.getPostUsername());
 
+            //프로필 이미지 뷰 이미지 넣기
             if(post.getPostProfileImageUri() != null){
                 Glide.with(context)
                         .load(Uri.parse(post.getPostProfileImageUri()))
                         .placeholder(R.drawable.ic_loading) // 이미지 로딩중 보여주는 이미지
                         .error(R.drawable.ic_unknown)       // 이미지 로딩 실패 시 보여주는 이미지
-                        //.fallback(R.drawable.ic_unknown)    // 이미지가 없을 시 보여주는 이미지 -> 이미지 없으면 표시 안함
+                        .fallback(R.drawable.ic_unknown)    // 이미지가 없을 시 보여주는 이미지
                         .into(circleImageView_postProfileImage);
             }
 

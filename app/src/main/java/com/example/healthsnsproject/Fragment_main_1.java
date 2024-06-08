@@ -48,14 +48,12 @@ public class Fragment_main_1 extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 
-        // 어댑터 초기화 및 예제 데이터 추가
+        // 어댑터 초기화
         postList = new ArrayList<>();
         adapter = new Post_adapter(getContext());
         adapter.setList(postList);
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
-
-        loadData();
 
         // 아이템 클릭 리스너 설정
         adapter.setOnPostItemClickListener(post_item -> Toast.makeText(requireActivity().getApplicationContext(), post_item.getPostUsername(), Toast.LENGTH_SHORT).show());
@@ -67,6 +65,17 @@ public class Fragment_main_1 extends Fragment {
 
             // 데이터 로드 완료 후 리프레시 상태 해제
             swipeRefreshLayout.setRefreshing(false);
+        });
+
+        // 처음 로딩을 리프레시 레이아웃 새로고침으로 하도록 함
+        swipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                swipeRefreshLayout.setRefreshing(true);
+                loadData();
+
+                swipeRefreshLayout.setRefreshing(false);
+            }
         });
 
         return view;
