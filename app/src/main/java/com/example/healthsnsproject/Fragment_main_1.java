@@ -79,8 +79,10 @@ public class Fragment_main_1 extends Fragment {
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     List<Post_item> postList = new ArrayList<>();
-                    Post_item post = new Post_item();
+
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        Post_item post = new Post_item();
+
                         String postProfileImageUri = document.getString("postProfileImageUri");
                         String postImageUri = document.getString("postImageUrl");
                         String postUsername = document.getString("postUsername");

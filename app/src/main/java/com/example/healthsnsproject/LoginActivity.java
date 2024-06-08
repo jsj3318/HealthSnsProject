@@ -59,6 +59,11 @@ public class LoginActivity extends AppCompatActivity {
         button_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // 빈칸 있을 때 동작
+                if (editText_id.getText().toString().isEmpty() || editText_pw.getText().toString().isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "계정 또는 비밀번호를 입력하세요.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 mAuth.signInWithEmailAndPassword(editText_id.getText().toString(),editText_pw.getText().toString())
                             .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
