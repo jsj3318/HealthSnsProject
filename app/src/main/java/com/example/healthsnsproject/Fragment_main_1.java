@@ -60,6 +60,9 @@ public class Fragment_main_1 extends Fragment {
 
         // 리프레시 레이아웃 리스너 설정
         swipeRefreshLayout.setOnRefreshListener(() -> {
+            //리스트 비움
+            postList.clear();
+
             // 새로고침 이벤트 처리
             loadData();
 

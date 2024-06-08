@@ -92,6 +92,9 @@ public class Post_adapter extends RecyclerView.Adapter<Post_adapter.Post_viewHol
 
         @SuppressLint("SetTextI18n")
         public void bind(final Post_item post) {
+            //일단 사진부터 비움
+            imageView_postImage.setImageDrawable(null);
+
             itemView.setOnClickListener(v -> {
                 if (onPostItemClickListener != null) {
                     onPostItemClickListener.onItemClick(post);
@@ -118,9 +121,6 @@ public class Post_adapter extends RecyclerView.Adapter<Post_adapter.Post_viewHol
                         .error(R.drawable.ic_unknown)       // 이미지 로딩 실패 시 보여주는 이미지
                         //.fallback(R.drawable.ic_unknown)    // 이미지가 없을 시 보여주는 이미지 -> 이미지 없으면 표시 안함
                         .into(imageView_postImage);
-            }
-            else{
-                imageView_postImage.setImageDrawable(null);
             }
 
             // 본문 내용이 40자가 넘으면 잘라서 표시
