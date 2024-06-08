@@ -145,9 +145,12 @@ public class Post_adapter extends RecyclerView.Adapter<Post_adapter.Post_viewHol
             // 좋아요 수와 댓글 수를 반영하기
             textView_count.setText("좋아요 " + post.getLikeCount() + "명 댓글 " + post.getCommentCount() + "개");
 
-            // 좋아요 이미 눌렀을 경우 좋아요 버튼 이미지 바꾸기
+            // 좋아요 여부에 따른 이미지 변경
             if (post.getLikeState()) {
                 imageButton_like.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.heart2));
+            }
+            else {
+                imageButton_like.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.heart1));
             }
 
             // 좋아요 버튼 동작
