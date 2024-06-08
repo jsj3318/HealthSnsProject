@@ -2,6 +2,7 @@ package com.example.healthsnsproject;
 
 import static android.content.ContentValues.TAG;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -32,6 +33,8 @@ import com.google.firebase.storage.UploadTask;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class Fragment_main_4 extends Fragment {
+    //프로필 사진 업로드 로딩 다이얼로그
+    private ProgressDialog progressDialog;
 
     private Profile_view profileView;
 
@@ -70,6 +73,8 @@ public class Fragment_main_4 extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+
+
         // 프로필 이미지 선택하는 인텐트 반환 받기
         if (requestCode == 1 && resultCode == getActivity().RESULT_OK && data != null) {
             Uri selectedImageUri = data.getData();
@@ -95,6 +100,9 @@ public class Fragment_main_4 extends Fragment {
                 }).addOnCompleteListener(new OnCompleteListener<Uri>() {
                     @Override
                     public void onComplete(@NonNull Task<Uri> task) {
+                        //업로드 다이얼로그 종료
+                        progressDialog.dismiss();
+
                         if (task.isSuccessful()) {
                             Uri downloadUri = task.getResult();
                             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
@@ -111,11 +119,10 @@ public class Fragment_main_4 extends Fragment {
                 });
 
 
-
-
-
             }
         }
+
+
     }
 
 
@@ -142,6 +149,11 @@ public class Fragment_main_4 extends Fragment {
             }
         }
 
+        //다이얼로그 초기화
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("프로필 이미지 업로드 중...");
+
         //프로필 이미지 클릭 리스너
         profileView.setImageView_clickListener(new View.OnClickListener() {
             @Override
@@ -156,6 +168,9 @@ public class Fragment_main_4 extends Fragment {
                                 Intent intent = new Intent(Intent.ACTION_PICK);
                                 intent.setType("image/*");
                                 startActivityForResult(intent, 1);
+
+                                //업로드 로딩 다이얼로그 표시
+                                progressDialog.show();
                             }
                         })
                         .setNegativeButton("아니오", new DialogInterface.OnClickListener() {
