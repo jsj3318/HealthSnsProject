@@ -55,6 +55,8 @@ public class Fragment_main_1 extends Fragment {
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
+        loadData();
+
         // 아이템 클릭 리스너 설정
         adapter.setOnPostItemClickListener(post_item -> Toast.makeText(requireActivity().getApplicationContext(), post_item.getPostUsername(), Toast.LENGTH_SHORT).show());
 

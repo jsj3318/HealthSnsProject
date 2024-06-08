@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,21 +58,20 @@ public class Post_adapter extends RecyclerView.Adapter<Post_adapter.Post_viewHol
     }
 
     public class Post_viewHolder extends RecyclerView.ViewHolder {
-        CircleImageView circleImageView_postProfileImage, circleImageView_postImage; //, circleImageView_commentProfileImage;
+        CircleImageView circleImageView_postProfileImage; //, circleImageView_commentProfileImage;
+        ImageView ImageView_postImage;
         TextView textView_postUsername, textView_date, textView_postContent, textView_count; //textView_commentUsername, textView_comment, ;
-        ViewPager2 pager;
         ImageButton imageButton_like, imageButton_comment;
 
         public Post_viewHolder(@NonNull View view) {
             super(view);
 
             circleImageView_postProfileImage = view.findViewById(R.id.postProfileImage);
-            circleImageView_postImage = view.findViewById(R.id.postImage);
+            ImageView_postImage = view.findViewById(R.id.postImage);
             textView_postUsername = view.findViewById(R.id.textView_postUsername);
             textView_date = view.findViewById(R.id.textView_date);
             textView_postContent = view.findViewById(R.id.textView_postContent);
             textView_count = view.findViewById(R.id.textView_count);
-            pager = view.findViewById(R.id.pager);
             imageButton_like = view.findViewById(R.id.imageButton_like);
             imageButton_comment = view.findViewById(R.id.imageButton_comment);
 

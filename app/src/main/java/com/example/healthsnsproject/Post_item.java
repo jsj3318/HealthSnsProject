@@ -36,6 +36,10 @@ public class Post_item {
         setPostUsername(postUsername);
         setDate(date);
         setPostContent(postContent);
+
+        setLikeState(false);
+        setLikeCount(0);
+        setCommentCount(0);
     }
 
     // getters & setters 방식으로 변경
