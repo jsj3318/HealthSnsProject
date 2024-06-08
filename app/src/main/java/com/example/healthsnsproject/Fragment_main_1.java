@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -55,8 +56,9 @@ public class Fragment_main_1 extends Fragment {
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
-        // 아이템 클릭 리스너 설정
-        adapter.setOnPostItemClickListener(post_item -> Toast.makeText(requireActivity().getApplicationContext(), post_item.getPostUsername(), Toast.LENGTH_SHORT).show());
+        //리사이클러 뷰 구분선 추가
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
+        recyclerView.addItemDecoration(dividerItemDecoration);
 
         // 리프레시 레이아웃 리스너 설정
         swipeRefreshLayout.setOnRefreshListener(() -> {
@@ -80,6 +82,10 @@ public class Fragment_main_1 extends Fragment {
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
+
+        // 아이템 클릭 리스너 설정
+        adapter.setOnPostItemClickListener(post_item -> Toast.makeText(requireActivity().getApplicationContext(), post_item.getPostUsername(), Toast.LENGTH_SHORT).show());
+
 
         return view;
     }
