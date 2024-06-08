@@ -50,7 +50,7 @@ public class Fragment_main_1 extends Fragment {
 
         // 어댑터 초기화 및 예제 데이터 추가
         ArrayList<Post_item> postList = new ArrayList<>();
-        adapter = new Post_adapter();
+        adapter = new Post_adapter(getContext());
         adapter.setList(postList);
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
@@ -82,7 +82,7 @@ public class Fragment_main_1 extends Fragment {
                     Post_item post = new Post_item();
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                         String postProfileImageUri = document.getString("postProfileImageUri");
-                        String postImageUri = document.getString("postImageUri");
+                        String postImageUri = document.getString("postImageUrl");
                         String postUsername = document.getString("postUsername");
                         String date = document.getString("date");
                         String postContent = document.getString("postContent");

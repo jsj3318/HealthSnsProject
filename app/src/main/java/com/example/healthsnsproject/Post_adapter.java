@@ -1,7 +1,9 @@
 package com.example.healthsnsproject;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.icu.text.SimpleDateFormat;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,8 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.bumptech.glide.Glide;
+
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
@@ -23,9 +27,14 @@ import java.util.Locale;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Post_adapter extends RecyclerView.Adapter<Post_adapter.Post_viewHolder> {
+    private Context context;
     private List<Post_item> postList;
 
     OnPostItemClickListener onPostItemClickListener;
+
+    public Post_adapter(Context context){
+        this.context = context;
+    }
 
     public interface OnPostItemClickListener {
         void onItemClick(Post_item post_item);
@@ -90,6 +99,14 @@ public class Post_adapter extends RecyclerView.Adapter<Post_adapter.Post_viewHol
             });
 
             textView_postUsername.setText(post.getPostUsername());
+
+            //본문 이미지 뷰 이미지 넣기
+            Glide.with(context)
+                    .load(Uri.parse(post.getPostImageUri()))
+                    .placeholder(R.drawable.ic_loading) // 이미지 로딩중 보여주는 이미지
+                    .error(R.drawable.ic_unknown)       // 이미지 로딩 실패 시 보여주는 이미지
+                    //.fallback(R.drawable.ic_unknown)    // 이미지가 없을 시 보여주는 이미지 -> 이미지 없으면 표시 안함
+                    .into(ImageView_postImage);
 
             // 본문 내용이 40자가 넘으면 잘라서 표시
             String content = post.getPostContent();
