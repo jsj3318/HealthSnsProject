@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -75,6 +76,7 @@ public class Fragment_main_1 extends Fragment {
     private void loadData() {
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         firestore.collection("postings")
+                .orderBy("date", Query.Direction.DESCENDING) // 내림차순 정렬
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
