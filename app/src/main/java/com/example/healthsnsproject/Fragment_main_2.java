@@ -1,5 +1,6 @@
 package com.example.healthsnsproject;
 
+import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -30,6 +31,10 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class Fragment_main_2 extends Fragment {
+
+    //업로드 로딩화면 다이얼로그
+    private ProgressDialog progressDialog;
+
     private ImageView imageView;
     private EditText editText;
     private Uri imageUri;
@@ -45,6 +50,11 @@ public class Fragment_main_2 extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main_2, container, false);
+
+        //다이얼로그 초기화
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("게시글 업로드 중...");
+        progressDialog.setCancelable(false);
 
         imageView = view.findViewById(R.id.imageView_upload);
         editText = view.findViewById(R.id.post_upload_content);
@@ -77,6 +87,9 @@ public class Fragment_main_2 extends Fragment {
 
     // 파일 업로드 메서드
     private void uploadPost() {
+        //업로드 로딩 다이얼로그 표시
+        progressDialog.show();
+
         String postContent = editText.getText().toString().trim();
         String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
@@ -120,12 +133,20 @@ public class Fragment_main_2 extends Fragment {
 
         firestore.collection("postings").add(post)
                 .addOnCompleteListener(task -> {
+                    //업로드 후 다이얼로그 종료
+                    progressDialog.dismiss();
+
                     if (task.isSuccessful()) {
                         Toast.makeText(getContext(), "게시글 업로드 완료!", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(getContext(), "게시글 업로드 실패!", Toast.LENGTH_SHORT).show();
                     }
                 });
+
+        //업로드 후 화면 다시 비우기
+        editText.setText("");
+        imageUri = null;
+        imageView.setImageResource(R.drawable.add_image);
 
     }
 }
