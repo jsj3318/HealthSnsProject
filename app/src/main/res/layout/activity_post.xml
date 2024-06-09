@@ -79,14 +79,16 @@
                     android:scaleType="centerCrop"
                     app:srcCompat="@drawable/heart1" />
 
-            </LinearLayout>
+                <TextView
+                    android:id="@+id/textView_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:text="좋아요 n명 댓글 n개"
+                    android:layout_gravity="center_vertical"
+                    />
 
-            <TextView
-                android:id="@+id/textView_count"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:text="좋아요 n명 댓글 n개" />
+            </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"

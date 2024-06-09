@@ -78,12 +78,8 @@ public class activity_post extends AppCompatActivity {
                     .into(imageView_postImage);
         }
 
-        // 본문 내용이 40자가 넘으면 잘라서 표시
-        String content = post_item.getPostContent();
-        if (content.length() > 40) {
-            content = content.substring(0, 40) + "...";
-        }
-        textView_postContent.setText(content);
+        // 본문 표시
+        textView_postContent.setText(post_item.getPostContent());
 
         // 날짜 문자열 포맷팅 하는 파트
         SimpleDateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
