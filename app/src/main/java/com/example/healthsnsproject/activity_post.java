@@ -31,7 +31,7 @@ public class activity_post extends AppCompatActivity {
     private CircleImageView circleImageView_postProfileImage;
     private ImageView imageView_postImage;
     private TextView textView_postUsername, textView_date, textView_postContent, textView_count;
-    private ImageButton imageButton_like;
+    private ImageButton imageButton_like, button_follow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +54,21 @@ public class activity_post extends AppCompatActivity {
         textView_postContent = findViewById(R.id.textView_postContent);
         textView_count = findViewById(R.id.textView_count);
         imageButton_like = findViewById(R.id.imageButton_like);
+        button_follow = findViewById(R.id.button_follow);
 
 
         textView_postUsername.setText(post_item.getPostUsername());
+
+        //팔로우 버튼 이벤트
+        button_follow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //팔로우 버튼 클릭 시
+
+
+
+            }
+        });
 
         //프로필 이미지 뷰 이미지 넣기
         if(post_item.getPostProfileImageUri() != null){
