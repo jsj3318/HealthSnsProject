@@ -70,7 +70,7 @@ public class Post_adapter extends RecyclerView.Adapter<Post_adapter.Post_viewHol
         CircleImageView circleImageView_postProfileImage; //, circleImageView_commentProfileImage;
         ImageView imageView_postImage;
         TextView textView_postUsername, textView_date, textView_postContent, textView_count; //textView_commentUsername, textView_comment, ;
-        ImageButton imageButton_like, imageButton_comment;
+        ImageButton imageButton_like;
 
         public Post_viewHolder(@NonNull View view) {
             super(view);
@@ -82,7 +82,6 @@ public class Post_adapter extends RecyclerView.Adapter<Post_adapter.Post_viewHol
             textView_postContent = view.findViewById(R.id.textView_postContent);
             textView_count = view.findViewById(R.id.textView_count);
             imageButton_like = view.findViewById(R.id.imageButton_like);
-            imageButton_comment = view.findViewById(R.id.imageButton_comment);
 
 
         }
@@ -166,10 +165,7 @@ public class Post_adapter extends RecyclerView.Adapter<Post_adapter.Post_viewHol
                 textView_count.setText("좋아요 " + post.getLikeCount() + "명 댓글 " + post.getCommentCount() + "개");
             });
 
-            // 댓글 버튼 클릭 이벤트
-            imageButton_comment.setOnClickListener(v -> {
-                // 해당 게시글 댓글 창으로 이동
-            });
+
 
             // 프로필 이미지, 이름 클릭 이벤트 -> 프로필 페이지 들어가기
             View.OnClickListener profile_event = v -> {
