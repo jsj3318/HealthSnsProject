@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         //바텀 내비게이션
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navagation);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(
                 new NavigationBarView.OnItemSelectedListener() {
                     @Override

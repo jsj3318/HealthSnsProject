@@ -84,10 +84,7 @@ public class Post_adapter extends RecyclerView.Adapter<Post_adapter.Post_viewHol
             imageButton_like = view.findViewById(R.id.imageButton_like);
             imageButton_comment = view.findViewById(R.id.imageButton_comment);
 
-            //댓글부분
-            //circleImageView_commentProfileImage = view.findViewById(R.id.commentProfileImage);
-            //textView_commentUsername = view.findViewById(R.id.textView_commentUsername);
-            //textView_comment = view.findViewById(R.id.textView_comment);
+
         }
 
         @SuppressLint("SetTextI18n")

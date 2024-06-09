@@ -1,6 +1,11 @@
 package com.example.healthsnsproject;
 
-public class Post_item {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
+public class Post_item implements Parcelable {
     private String postProfileImageUri = "";
     private String postImageUri = "";
     private String postUsername = "";
@@ -37,9 +42,9 @@ public class Post_item {
         setCommentUsername(getCommentUsername());
         setComment(getComment());
         */
-        setLikeState(getLikeState());
-        setLikeCount(getLikeCount());
-        setCommentCount(getCommentCount());
+        //setLikeState(getLikeState());
+        //setLikeCount(getLikeCount());
+        //setCommentCount(getCommentCount());
     }
 
     // getters & setters 방식으로 변경
@@ -106,4 +111,54 @@ public class Post_item {
     public void setCommentCount(int commentCount) {
         this.commentCount = commentCount;
     }
+
+
+    protected Post_item(Parcel in) {
+        postProfileImageUri = in.readString();
+        postImageUri = in.readString();
+        postUsername = in.readString();
+        date = in.readString();
+        postContent = in.readString();
+        commentProfileImageUri = in.readString();
+        commentUsername = in.readString();
+        comment = in.readString();
+        byte tmpLikeState = in.readByte();
+        likeState = tmpLikeState == 0 ? null : tmpLikeState == 1;
+        likeCount = in.readInt();
+        commentCount = in.readInt();
+    }
+
+    public static final Creator<Post_item> CREATOR = new Creator<Post_item>() {
+        @Override
+        public Post_item createFromParcel(Parcel in) {
+            return new Post_item(in);
+        }
+
+        @Override
+        public Post_item[] newArray(int size) {
+            return new Post_item[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(postProfileImageUri);
+        dest.writeString(postImageUri);
+        dest.writeString(postUsername);
+        dest.writeString(date);
+        dest.writeString(postContent);
+        dest.writeString(commentProfileImageUri);
+        dest.writeString(commentUsername);
+        dest.writeString(comment);
+        dest.writeByte((byte) (likeState == null ? 0 : likeState ? 1 : 2));
+        dest.writeInt(likeCount);
+        dest.writeInt(commentCount);
+    }
+
+
 }

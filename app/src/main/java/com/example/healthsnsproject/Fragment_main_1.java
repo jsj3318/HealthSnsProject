@@ -1,6 +1,7 @@
 package com.example.healthsnsproject;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -84,7 +85,18 @@ public class Fragment_main_1 extends Fragment {
         });
 
         // 아이템 클릭 리스너 설정
-        adapter.setOnPostItemClickListener(post_item -> Toast.makeText(requireActivity().getApplicationContext(), post_item.getPostUsername(), Toast.LENGTH_SHORT).show());
+        //adapter.setOnPostItemClickListener(post_item -> Toast.makeText(requireActivity().getApplicationContext(), post_item.getPostUsername(), Toast.LENGTH_SHORT).show());
+        adapter.setOnPostItemClickListener(new Post_adapter.OnPostItemClickListener() {
+            @Override
+            public void onItemClick(Post_item post_item) {
+                // 게시물 클릭 시 게시물 화면으로 이동하는 부분
+                Intent intent = new Intent(getActivity(), activity_post.class);
+                intent.putExtra("post_item", post_item);
+                startActivity(intent);
+
+            }
+        });
+
 
 
         return view;
