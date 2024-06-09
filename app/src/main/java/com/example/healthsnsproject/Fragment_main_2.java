@@ -96,6 +96,9 @@ public class Fragment_main_2 extends Fragment {
         // 이미지와 텍스트가 모두 없는 경우 처리
         if (imageUri == null && postContent.isEmpty()) {
             Toast.makeText(getContext(), "업로드 할 내용이 없습니다!!", Toast.LENGTH_SHORT).show();
+
+            // 로딩 다이얼로그 취소
+            progressDialog.dismiss();
             return;
         }
 

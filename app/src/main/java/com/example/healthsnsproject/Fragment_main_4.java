@@ -50,6 +50,9 @@ public class Fragment_main_4 extends Fragment {
         if (requestCode == 1 && resultCode == getActivity().RESULT_OK && data != null) {
             Uri selectedImageUri = data.getData();
             if (selectedImageUri != null) {
+                //업로드 로딩 다이얼로그 표시
+                progressDialog.show();
+
                 profileView.setImage(selectedImageUri);
                 // 이미지 uri 파이어 베이스에 업로드
                 FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -127,8 +130,7 @@ public class Fragment_main_4 extends Fragment {
                         intent.setType("image/*");
                         startActivityForResult(intent, 1);
 
-                        //업로드 로딩 다이얼로그 표시
-                        progressDialog.show();
+
                     })
                     .setNegativeButton("아니오", (dialog, which) -> {
                         // 사용자가 이미지 변경을 취소한 경우 아무 작업도 하지 않음
