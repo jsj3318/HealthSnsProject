@@ -64,7 +64,7 @@ public class activity_post extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //팔로우 버튼 클릭 시
-
+                Toast.makeText(activity_post.this, post_item.getPostUsername() + " 팔로우 버튼 클릭됨", Toast.LENGTH_SHORT).show();
 
 
             }
