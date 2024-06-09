@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.icu.text.SimpleDateFormat;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,15 +18,19 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -139,51 +144,84 @@ public class Post_adapter extends RecyclerView.Adapter<Post_adapter.Post_viewHol
                 textView_date.setText(post.getDate());  // 포맷 실패 시 원본 날짜를 표시
             }
 
-            // 좋아요 수와 댓글 수를 반영하기
-            textView_count.setText("좋아요 " + post.getLikeCount() + "명 댓글 " + post.getCommentCount() + "개");
 
-            // 좋아요 여부에 따른 이미지 변경
-            if (post.getLikedPeople() != null && post.getLikedPeople().contains(user.getUid())) {
-                // 만약 사용자의 UID가 likedPeople 배열에 있으면 이미지를 heart2로 변경
-                imageButton_like.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.heart2));
-            } else {
-                // 사용자의 UID가 likedPeople 배열에 없으면 이미지를 heart1로 변경
-                imageButton_like.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.heart1));
-            }
 
-            // 좋아요 버튼 동작
+            // Firestore에서 데이터를 가져와 UI를 설정
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            DocumentReference postRef = db.collection("postings").document(post.getPostId());
+
+            postRef.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Object likedPeopleObj = document.get("likedPeople");
+                        List<String> likedPeople = likedPeopleObj instanceof List<?> ? (List<String>) likedPeopleObj : new ArrayList<>();
+                        int likeCount = likedPeople.size();
+
+                        // 좋아요 수와 댓글 수를 반영하기
+                        textView_count.setText("좋아요 " + likeCount + "명 댓글 " + post.getCommentCount() + "개");
+
+                        // 좋아요 여부에 따른 이미지 변경
+                        if (likedPeople.contains(user.getUid())) {
+                            // 만약 사용자의 UID가 likedPeople 배열에 있으면 이미지를 heart2로 변경
+                            imageButton_like.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.heart2));
+                        } else {
+                            // 사용자의 UID가 likedPeople 배열에 없으면 이미지를 heart1로 변경
+                            imageButton_like.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.heart1));
+                        }
+                    } else {
+                        Log.d("Firestore", "No such document");
+                    }
+                } else {
+                    Log.d("Firestore", "Error getting document: ", task.getException());
+                }
+            });
+
             imageButton_like.setOnClickListener(v -> {
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
-                DocumentReference postRef = db.collection("postings").document(post.getPostId());
+                // Firestore에서 현재 likedPeople 리스트 가져오기
+                postRef.get().addOnCompleteListener(likeTask -> {
+                    if (likeTask.isSuccessful()) {
+                        DocumentSnapshot likeDocument = likeTask.getResult();
+                        if (likeDocument.exists()) {
+                            Object likedPeopleObj = likeDocument.get("likedPeople");
+                            List<String> likedPeople = likedPeopleObj instanceof List<?> ? (List<String>) likedPeopleObj : new ArrayList<>();
+                            boolean isLiked = likedPeople.contains(user.getUid());
+                            int likeCount = likedPeople.size();
 
-                if (post.getLikedPeople() != null && post.getLikedPeople().contains(user.getUid())) {
-                    // 만약 사용자의 UID가 likedPeople 배열에 있으면
-                    // 좋아요가 되어있는 경우 좋아요 취소로 처리
-                    post.setLikeCount(post.getLikeCount() - 1);
-                    imageButton_like.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.heart1));
+                            if (isLiked) {
+                                // 좋아요가 되어있는 경우 좋아요 취소로 처리
+                                imageButton_like.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.heart1));
 
-                    // likedPeople 배열에서 사용자의 UID 제거
-                    postRef.update("likedPeople", FieldValue.arrayRemove(user.getUid()));
-                }
-                else {
-                    // 사용자의 UID가 likedPeople 배열에 없으면
-                    // 좋아요가 안되어있는 경우 좋아요로 처리
-                    post.setLikeCount(post.getLikeCount() + 1);
-                    imageButton_like.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.heart2));
+                                // likedPeople 배열에서 사용자의 UID 제거
+                                postRef.update("likedPeople", FieldValue.arrayRemove(user.getUid()))
+                                        .addOnSuccessListener(aVoid -> {
+                                            // Firestore 업데이트가 성공한 후 UI 업데이트
+                                            textView_count.setText("좋아요 " + (likeCount - 1) + "명 댓글 " + post.getCommentCount() + "개");
+                                        });
+                            } else {
+                                // 좋아요가 안되어있는 경우 좋아요로 처리
+                                imageButton_like.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.heart2));
 
-                    // likedPeople 배열에 사용자의 UID 추가
-                    postRef.update("likedPeople", FieldValue.arrayUnion(user.getUid()));
-                }
-                updateLikeInfo(post);
-
-                // 카운트 텍스트 뷰 다시 반영
-                textView_count.setText("좋아요 " + post.getLikeCount() + "명 댓글 " + post.getCommentCount() + "개");
+                                // likedPeople 배열에 사용자의 UID 추가
+                                postRef.update("likedPeople", FieldValue.arrayUnion(user.getUid()))
+                                        .addOnSuccessListener(aVoid -> {
+                                            // Firestore 업데이트가 성공한 후 UI 업데이트
+                                            textView_count.setText("좋아요 " + (likeCount + 1) + "명 댓글 " + post.getCommentCount() + "개");
+                                        });
+                            }
+                        } else {
+                            Log.d("Firestore", "No such document");
+                        }
+                    } else {
+                        Log.d("Firestore", "Error getting document: ", likeTask.getException());
+                    }
+                });
             });
 
 
-            if (is_changed(post)){
-                updateLikeInfo(post); // 좋아요 상태 업데이트
-            }
+
+
+
 
             // 프로필 이미지, 이름 클릭 이벤트 -> 프로필 페이지 들어가기
             View.OnClickListener profile_event = v -> {
@@ -195,15 +233,6 @@ public class Post_adapter extends RecyclerView.Adapter<Post_adapter.Post_viewHol
         }
 
         // 좋아요 상태 업데이트(문서수정)
-        private void updateLikeInfo(Post_item post) {
-            String userId = user.getUid();
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            DocumentReference postRef = db.collection("postings").document(post.getPostId());
-            postRef.update("likedPeople", FieldValue.arrayUnion(userId), "likeCount", post.getLikeCount());
-        }
 
-        private boolean is_changed(Post_item post){
-            return post.getLikeCount() != post.getPrevLikeCount();
-        }
     }
 }
