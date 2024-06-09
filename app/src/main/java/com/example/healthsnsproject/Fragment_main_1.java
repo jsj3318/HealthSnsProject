@@ -17,11 +17,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class Fragment_main_1 extends Fragment {
 
@@ -68,36 +72,31 @@ public class Fragment_main_1 extends Fragment {
 
             // 새로고침 이벤트 처리
             loadData();
+            loadPostId();
+            loadLikeInfo();
 
             // 데이터 로드 완료 후 리프레시 상태 해제
             swipeRefreshLayout.setRefreshing(false);
         });
 
         // 처음 로딩을 리프레시 레이아웃 새로고침으로 하도록 함
-        swipeRefreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                swipeRefreshLayout.setRefreshing(true);
-                loadData();
-
-                swipeRefreshLayout.setRefreshing(false);
-            }
+        swipeRefreshLayout.post(() -> {
+            swipeRefreshLayout.setRefreshing(true);
+            loadData();
+            loadPostId();
+            loadLikeInfo();
+            swipeRefreshLayout.setRefreshing(false);
         });
 
         // 아이템 클릭 리스너 설정
         //adapter.setOnPostItemClickListener(post_item -> Toast.makeText(requireActivity().getApplicationContext(), post_item.getPostUsername(), Toast.LENGTH_SHORT).show());
-        adapter.setOnPostItemClickListener(new Post_adapter.OnPostItemClickListener() {
-            @Override
-            public void onItemClick(Post_item post_item) {
-                // 게시물 클릭 시 게시물 화면으로 이동하는 부분
-                Intent intent = new Intent(getActivity(), activity_post.class);
-                intent.putExtra("post_item", post_item);
-                startActivity(intent);
+        adapter.setOnPostItemClickListener(post_item -> {
+            // 게시물 클릭 시 게시물 화면으로 이동하는 부분
+            Intent intent = new Intent(getActivity(), activity_post.class);
+            intent.putExtra("post_item", post_item);
+            startActivity(intent);
 
-            }
         });
-
-
 
         return view;
     }
@@ -123,10 +122,9 @@ public class Fragment_main_1 extends Fragment {
                         post.setPostUsername(postUsername);
                         post.setDate(date);
                         post.setPostContent(postContent);
+                        post.setCommentCount(post.getCommentCount());
                         post.setLikeState(post.getLikeState());
                         post.setLikeCount(post.getLikeCount());
-                        post.setCommentCount(post.getCommentCount());
-
                         postList.add(post);
                     }
 
@@ -135,4 +133,64 @@ public class Fragment_main_1 extends Fragment {
                 })
                 .addOnFailureListener(e -> Toast.makeText(getContext(), "게시글을 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show());
     }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void loadPostId(){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("postings")
+                .orderBy("date", Query.Direction.DESCENDING) // 내림차순 정렬
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        // 게시글id 가져와서 저장
+                        for (DocumentSnapshot document : task.getResult()) {
+                            Post_item post = new Post_item();
+
+                            String postId = document.getId();
+                            post.setPostId(postId);
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(getContext(), "게시글 id를 가져오는데 실패했습니다.", Toast.LENGTH_SHORT).show());
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void loadLikeInfo() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("postings")
+                .orderBy("date", Query.Direction.DESCENDING) // 내림차순 정렬
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        // 좋아요 상태 저장
+                        for (DocumentSnapshot document : task.getResult()) {
+                            Post_item post = new Post_item();
+                            String postId = document.getId();
+
+                            DocumentReference postRef = db.collection("postings").document(postId);
+                            postRef.get().addOnSuccessListener(documentSnapshot -> {
+                                // likedPeople 데이터 가져오기
+                                List<String> likedPeople = (List<String>) documentSnapshot.get("likedPeople");
+                                post.setLikedPeople(likedPeople);
+                                adapter.notifyDataSetChanged();
+                            });
+
+                            int likeCount = Objects.requireNonNull(document.getLong("likeCount")).intValue();
+                            post.setLikeCount(likeCount);
+
+                            if (likeCount == 0 || likeCount == 1) {
+                                post.setPrevLikeCount(0);
+                            }else{
+                                post.setPrevLikeCount(likeCount-1);
+                            }
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(getContext(), "데이터를 가져오는데 실패했습니다.", Toast.LENGTH_SHORT).show());
+    }
+
 }

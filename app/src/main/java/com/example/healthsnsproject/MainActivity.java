@@ -1,14 +1,11 @@
 package com.example.healthsnsproject;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
@@ -17,12 +14,10 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 
 public class MainActivity extends AppCompatActivity
         implements Fragment_main_4.OnFragmentInteractionListener {
     private long backPressedTime;
-
 
     //프래그먼트 객체 생성
     private Fragment_main_1 fragment_main_1;
@@ -69,27 +64,24 @@ public class MainActivity extends AppCompatActivity
         //바텀 내비게이션
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(
-                new NavigationBarView.OnItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                        //내비게이션 바 선택된 메뉴에 따라 프래그먼트 표시 변경
-                        //스위치 문 쓰고 싶은데 id 찾는 데에 오류가 해결이 안돼서 어쩔 수 없이 if-else 씀 ㅠㅠ
-                        int itemId = menuItem.getItemId();
-                        if (itemId == R.id.tab1) {
-                            showFragment(fragment_main_1);
-                            return true;
-                        } else if (itemId == R.id.tab2) {
-                            showFragment(fragment_main_2);
-                            return true;
-                        } else if (itemId == R.id.tab3) {
-                            showFragment(fragment_main_3);
-                           return true;
-                        } else if (itemId == R.id.tab4) {
-                            showFragment(fragment_main_4);
-                            return true;
-                        }
-                        return false;
+                menuItem -> {
+                    //내비게이션 바 선택된 메뉴에 따라 프래그먼트 표시 변경
+                    //스위치 문 쓰고 싶은데 id 찾는 데에 오류가 해결이 안돼서 어쩔 수 없이 if-else 씀 ㅠㅠ
+                    int itemId = menuItem.getItemId();
+                    if (itemId == R.id.tab1) {
+                        showFragment(fragment_main_1);
+                        return true;
+                    } else if (itemId == R.id.tab2) {
+                        showFragment(fragment_main_2);
+                        return true;
+                    } else if (itemId == R.id.tab3) {
+                        showFragment(fragment_main_3);
+                       return true;
+                    } else if (itemId == R.id.tab4) {
+                        showFragment(fragment_main_4);
+                        return true;
                     }
+                    return false;
                 }
         );
 
@@ -122,19 +114,15 @@ public class MainActivity extends AppCompatActivity
         new AlertDialog.Builder(this)
                 .setTitle("로그아웃")
                 .setMessage("로그아웃 하시겠습니까?")
-                .setPositiveButton("예", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                        finish();
-                    }
+                .setPositiveButton("예", (dialog, which) -> {
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    finish();
                 })
                 .setNegativeButton("아니오", null)
                 .show();
 
     }
-
 
 }

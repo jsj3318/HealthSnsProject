@@ -15,26 +15,28 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Post_adapter extends RecyclerView.Adapter<Post_adapter.Post_viewHolder> {
     private Context context;
-    private List<Post_item> postList;
-
+    private ArrayList<Post_item> postList;
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     OnPostItemClickListener onPostItemClickListener;
 
-    public Post_adapter(Context context){
-        this.context = context;
-    }
+    public Post_adapter(Context context){ this.context = context; }
 
     public interface OnPostItemClickListener {
         void onItemClick(Post_item post_item);
@@ -44,7 +46,7 @@ public class Post_adapter extends RecyclerView.Adapter<Post_adapter.Post_viewHol
         this.onPostItemClickListener = listener;
     }
 
-    public void setList(List<Post_item> postList) {
+    public void setList(ArrayList<Post_item> postList) {
         this.postList = postList;
     }
 
@@ -72,6 +74,7 @@ public class Post_adapter extends RecyclerView.Adapter<Post_adapter.Post_viewHol
         TextView textView_postUsername, textView_date, textView_postContent, textView_count; //textView_commentUsername, textView_comment, ;
         ImageButton imageButton_like;
 
+
         public Post_viewHolder(@NonNull View view) {
             super(view);
 
@@ -82,8 +85,6 @@ public class Post_adapter extends RecyclerView.Adapter<Post_adapter.Post_viewHol
             textView_postContent = view.findViewById(R.id.textView_postContent);
             textView_count = view.findViewById(R.id.textView_count);
             imageButton_like = view.findViewById(R.id.imageButton_like);
-
-
         }
 
         @SuppressLint("SetTextI18n")
@@ -142,30 +143,46 @@ public class Post_adapter extends RecyclerView.Adapter<Post_adapter.Post_viewHol
             textView_count.setText("좋아요 " + post.getLikeCount() + "명 댓글 " + post.getCommentCount() + "개");
 
             // 좋아요 여부에 따른 이미지 변경
-            if (post.getLikeState()) {
+            if (post.getLikedPeople() != null && post.getLikedPeople().contains(user.getUid())) {
+                // 만약 사용자의 UID가 likedPeople 배열에 있으면 이미지를 heart2로 변경
                 imageButton_like.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.heart2));
-            }
-            else {
+            } else {
+                // 사용자의 UID가 likedPeople 배열에 없으면 이미지를 heart1로 변경
                 imageButton_like.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.heart1));
             }
 
             // 좋아요 버튼 동작
             imageButton_like.setOnClickListener(v -> {
-                if (post.getLikeState()) {
-                    // 좋아요가 되어있는 경우
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                DocumentReference postRef = db.collection("postings").document(post.getPostId());
+
+                if (post.getLikedPeople() != null && post.getLikedPeople().contains(user.getUid())) {
+                    // 만약 사용자의 UID가 likedPeople 배열에 있으면
+                    // 좋아요가 되어있는 경우 좋아요 취소로 처리
                     post.setLikeCount(post.getLikeCount() - 1);
                     imageButton_like.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.heart1));
+                    // likedPeople 배열에서 사용자의 UID 제거
+                    postRef.update("likedPeople", FieldValue.arrayRemove(user.getUid()));
                 } else {
-                    // 좋아요 안되어있던 경우
+                    // 사용자의 UID가 likedPeople 배열에 없으면
+                    // 좋아요가 안되어있는 경우 좋아요로 처리
                     post.setLikeCount(post.getLikeCount() + 1);
                     imageButton_like.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.heart2));
+                    // likedPeople 배열에 사용자의 UID 추가
+                    postRef.update("likedPeople", FieldValue.arrayUnion(user.getUid()));
                 }
+
+                // 좋아요 상태 반전
                 post.setLikeState(!post.getLikeState());
-                // 카운트 텍스트 뷰 다시 반영하기
+
+                // 카운트 텍스트 뷰 다시 반영
                 textView_count.setText("좋아요 " + post.getLikeCount() + "명 댓글 " + post.getCommentCount() + "개");
             });
 
 
+            if (is_changed(post)){
+                updateLikeInfo(post); // 좋아요 상태 업데이트
+            }
 
             // 프로필 이미지, 이름 클릭 이벤트 -> 프로필 페이지 들어가기
             View.OnClickListener profile_event = v -> {
@@ -174,6 +191,18 @@ public class Post_adapter extends RecyclerView.Adapter<Post_adapter.Post_viewHol
 
             circleImageView_postProfileImage.setOnClickListener(profile_event);
             textView_postUsername.setOnClickListener(profile_event);
+        }
+
+        // 좋아요 상태 업데이트(문서수정)
+        private void updateLikeInfo(Post_item post) {
+            String userId = user.getUid();
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            DocumentReference postRef = db.collection("postings").document(post.getPostId());
+            postRef.update("likedPeople", FieldValue.arrayUnion(userId), "likeCount", post.getLikeCount());
+        }
+
+        private boolean is_changed(Post_item post){
+            return post.getLikeCount() != post.getPrevLikeCount();
         }
     }
 }

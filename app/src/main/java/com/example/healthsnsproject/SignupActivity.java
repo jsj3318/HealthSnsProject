@@ -1,29 +1,20 @@
 package com.example.healthsnsproject;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.HashMap;
 
 public class SignupActivity extends AppCompatActivity {
     EditText editText_name;
@@ -39,7 +30,6 @@ public class SignupActivity extends AppCompatActivity {
     Button button_create_account;
 
     private FirebaseAuth mAuth;
-    DatabaseReference Reference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,83 +56,78 @@ public class SignupActivity extends AppCompatActivity {
 
 
         button_create_account = findViewById(R.id.button_create_account);
-        button_create_account.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean isError = false;
+        button_create_account.setOnClickListener(v -> {
+            boolean isError = false;
 
-                //닉네임 비어있는지 검사
-                if (editText_name.getText().toString().isEmpty()) {
-                    textView_name_error.setText("닉네임을 입력하세요.");
-                    isError = true;
-                }
-                //닉네임 공백 있는지 검사
-                else if (editText_name.getText().toString().contains(" ")) {
-                    //공백 있음
-                    textView_name_error.setText("공백은 입력할 수 없습니다.");
-                    isError = true;
-                }
-                //닉네임 중복 검사
+            //닉네임 비어있는지 검사
+            if (editText_name.getText().toString().isEmpty()) {
+                textView_name_error.setText("닉네임을 입력하세요.");
+                isError = true;
+            }
+            //닉네임 공백 있는지 검사
+            else if (editText_name.getText().toString().contains(" ")) {
+                //공백 있음
+                textView_name_error.setText("공백은 입력할 수 없습니다.");
+                isError = true;
+            }
+            //닉네임 중복 검사
 
 
 
-                //닉네임 통과
-                else {
-                    textView_name_error.setText("");
-                }
+            //닉네임 통과
+            else {
+                textView_name_error.setText("");
+            }
 
-                //아이디 비어있는지 검사
-                if (editText_id.getText().toString().isEmpty()) {
-                    textView_id_error.setText("아이디를 입력하세요.");
-                    isError = true;
-                }
-                //아이디 중복 검사
-
-
-
-                //아이디 통과
-                else {
-                    textView_id_error.setText("");
-                }
-
-                //패스워드 비어있는지 검사
-                if (editText_pw.getText().toString().isEmpty()) {
-                    textView_pw_error.setText("패스워드를 입력하세요.");
-                    isError = true;
-                }
-                //패스워드 통과
-                else {
-                    textView_pw_error.setText("");
-                }
-
-                //패스워드 확인 비어있는지 검사
-                if (editText_pw_re.getText().toString().isEmpty()) {
-                    textView_pw_re_error.setText("패스워드 확인을 입력하세요.");
-                    isError = true;
-                }
-                //패스워드 확인 일치 검사
-                else if (!editText_pw.getText().toString().equals(editText_pw_re.getText().toString())) {
-                    //틀렸음
-                    textView_pw_re_error.setText("패스워드가 일치하지 않습니다.");
-                    isError = true;
-                }
-                //패스워드 확인 통과
-                else {
-                    textView_pw_re_error.setText("");
-                }
+            //아이디 비어있는지 검사
+            if (editText_id.getText().toString().isEmpty()) {
+                textView_id_error.setText("아이디를 입력하세요.");
+                isError = true;
+            }
+            //아이디 중복 검사
 
 
-                if (!isError) {
-                    //에러 없으므로 데이터베이스에 계정 추가하고 회원가입 액티비티 종료
-                    //데이터 베이스 계정 정보 추가 부분
+
+            //아이디 통과
+            else {
+                textView_id_error.setText("");
+            }
+
+            //패스워드 비어있는지 검사
+            if (editText_pw.getText().toString().isEmpty()) {
+                textView_pw_error.setText("패스워드를 입력하세요.");
+                isError = true;
+            }
+            //패스워드 통과
+            else {
+                textView_pw_error.setText("");
+            }
+
+            //패스워드 확인 비어있는지 검사
+            if (editText_pw_re.getText().toString().isEmpty()) {
+                textView_pw_re_error.setText("패스워드 확인을 입력하세요.");
+                isError = true;
+            }
+            //패스워드 확인 일치 검사
+            else if (!editText_pw.getText().toString().equals(editText_pw_re.getText().toString())) {
+                //틀렸음
+                textView_pw_re_error.setText("패스워드가 일치하지 않습니다.");
+                isError = true;
+            }
+            //패스워드 확인 통과
+            else {
+                textView_pw_re_error.setText("");
+            }
 
 
-                    mAuth.createUserWithEmailAndPassword(editText_id.getText().toString(),
-                            editText_pw.getText().toString())
-                            .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
+            if (!isError) {
+                //에러 없으므로 데이터베이스에 계정 추가하고 회원가입 액티비티 종료
+                //데이터 베이스 계정 정보 추가 부분
 
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
+
+                mAuth.createUserWithEmailAndPassword(editText_id.getText().toString(),
+                        editText_pw.getText().toString())
+                        .addOnCompleteListener(SignupActivity.this, task -> {
                             if(task.isSuccessful()){
 
                                 FirebaseUser user = mAuth.getCurrentUser();
@@ -151,16 +136,13 @@ public class SignupActivity extends AppCompatActivity {
                                             .setDisplayName(editText_name.getText().toString())
                                             .build();
 
-                                    user.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-                                                // Additional user info can be stored in the database here
-                                                Toast.makeText(getApplicationContext(), "계정 생성 완료", Toast.LENGTH_SHORT).show();
-                                                finish();
-                                            } else {
-                                                Toast.makeText(getApplicationContext(), "프로필 업데이트 실패", Toast.LENGTH_SHORT).show();
-                                            }
+                                    user.updateProfile(profileUpdates).addOnCompleteListener(task1 -> {
+                                        if (task1.isSuccessful()) {
+                                            // Additional user info can be stored in the database here
+                                            Toast.makeText(getApplicationContext(), "계정 생성 완료", Toast.LENGTH_SHORT).show();
+                                            finish();
+                                        } else {
+                                            Toast.makeText(getApplicationContext(), "프로필 업데이트 실패", Toast.LENGTH_SHORT).show();
                                         }
                                     });
 
@@ -174,14 +156,11 @@ public class SignupActivity extends AppCompatActivity {
                             }
 
 
-                        }
+                        });
 
-                    });
-
-
-                }
 
             }
+
         });
 
 

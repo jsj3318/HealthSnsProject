@@ -121,7 +121,7 @@ public class Fragment_main_4 extends Fragment {
 
         //프로필 이미지 클릭 리스너
         profileView.setImageView_clickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
+            AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
             builder.setTitle("프로필 이미지 변경")
                     .setMessage("프로필 이미지를 변경하시겠습니까?")
                     .setPositiveButton("예", (dialog, which) -> {

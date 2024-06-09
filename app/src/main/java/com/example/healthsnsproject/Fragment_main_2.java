@@ -133,6 +133,9 @@ public class Fragment_main_2 extends Fragment {
             post.put("postContent", postContent);  // 텍스트가 있는 경우 추가
         }
         post.put("date", date);
+        post.put("likedPeople", null);
+        post.put("likeCount", 0);
+
 
         firestore.collection("postings").add(post)
                 .addOnCompleteListener(task -> {

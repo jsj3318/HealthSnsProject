@@ -3,7 +3,8 @@ package com.example.healthsnsproject;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import androidx.annotation.NonNull;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Post_item implements Parcelable {
     private String postProfileImageUri = "";
@@ -12,24 +13,16 @@ public class Post_item implements Parcelable {
     private String date = "";
     private String postContent = "";
 
+    private String postId = "";
     private String commentProfileImageUri = "";
     private String commentUsername = "";
     private String comment = "";
-    private Boolean likeState = false;
-    private int likeCount = 0;
     private int commentCount = 0;
 
-    public Post_item(String postProfileImageUri, String postImageUri, String postUsername, String date, String postContent) {
-        setPostProfileImageUri(postProfileImageUri);
-        setPostImageUri(postImageUri);
-        setPostUsername(postUsername);
-        setDate(date);
-        setPostContent(postContent);
-
-        setLikeState(false);
-        setLikeCount(0);
-        setCommentCount(0);
-    }
+    private List<String> likedPeople = new ArrayList<>();
+    private Boolean likeState = false;
+    private int likeCount = 0;
+    private int prevLikeCount = 0;
 
     public Post_item() {
         /*
@@ -41,10 +34,11 @@ public class Post_item implements Parcelable {
         setCommentProfileImageUri(getCommentProfileImageUri());
         setCommentUsername(getCommentUsername());
         setComment(getComment());
+
+        setLikeState(getLikeState());
+        setLikeCount(getLikeCount());
+        setCommentCount(getCommentCount());
         */
-        //setLikeState(getLikeState());
-        //setLikeCount(getLikeCount());
-        //setCommentCount(getCommentCount());
     }
 
     // getters & setters 방식으로 변경
@@ -75,6 +69,12 @@ public class Post_item implements Parcelable {
         this.postContent = postContent;
     }
 
+    public String getPostId() {
+        return postId;
+    }
+    public void setPostId(String postId) {
+        this.postId = postId;
+    }
     public String getCommentProfileImageUri() {
         return commentProfileImageUri;
     }
@@ -93,11 +93,25 @@ public class Post_item implements Parcelable {
     public void setComment(String comment) {
         this.comment = comment;
     }
+    public int getCommentCount() {
+        return commentCount;
+    }
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
+    }
+
+
     public Boolean getLikeState() {
         return likeState;
     }
     public void setLikeState(Boolean likeState) {
         this.likeState = likeState;
+    }
+    public List<String> getLikedPeople() {
+        return likedPeople;
+    }
+    public void setLikedPeople(List<String> likedPeople) {
+        this.likedPeople = likedPeople;
     }
     public int getLikeCount() {
         return likeCount;
@@ -105,11 +119,12 @@ public class Post_item implements Parcelable {
     public void setLikeCount(int likeCount) {
         this.likeCount = likeCount;
     }
-    public int getCommentCount() {
-        return commentCount;
+
+    public int getPrevLikeCount() {
+        return prevLikeCount;
     }
-    public void setCommentCount(int commentCount) {
-        this.commentCount = commentCount;
+    public void setPrevLikeCount(int prevLikeCount) {
+        this.prevLikeCount = prevLikeCount;
     }
 
 
@@ -119,13 +134,16 @@ public class Post_item implements Parcelable {
         postUsername = in.readString();
         date = in.readString();
         postContent = in.readString();
+
+        postId = in.readString();
         commentProfileImageUri = in.readString();
         commentUsername = in.readString();
         comment = in.readString();
+        commentCount = in.readInt();
         byte tmpLikeState = in.readByte();
         likeState = tmpLikeState == 0 ? null : tmpLikeState == 1;
         likeCount = in.readInt();
-        commentCount = in.readInt();
+        prevLikeCount = in.readInt();
     }
 
     public static final Creator<Post_item> CREATOR = new Creator<Post_item>() {
@@ -152,13 +170,14 @@ public class Post_item implements Parcelable {
         dest.writeString(postUsername);
         dest.writeString(date);
         dest.writeString(postContent);
+
+        dest.writeString(postId);
         dest.writeString(commentProfileImageUri);
         dest.writeString(commentUsername);
         dest.writeString(comment);
+        dest.writeInt(commentCount);
         dest.writeByte((byte) (likeState == null ? 0 : likeState ? 1 : 2));
         dest.writeInt(likeCount);
-        dest.writeInt(commentCount);
+        dest.writeInt(prevLikeCount);
     }
-
-
 }
