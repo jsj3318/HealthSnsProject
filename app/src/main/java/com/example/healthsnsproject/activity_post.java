@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.icu.text.SimpleDateFormat;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -21,9 +22,15 @@ import androidx.core.view.WindowInsetsCompat;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -104,31 +111,77 @@ public class activity_post extends AppCompatActivity {
             textView_date.setText(post_item.getDate());  // 포맷 실패 시 원본 날짜를 표시
         }
 
-        // 좋아요 수와 댓글 수를 반영하기
-        textView_count.setText("좋아요 " + post_item.getLikeCount() + "명 댓글 " + post_item.getCommentCount() + "개");
 
-        // 좋아요 여부에 따른 이미지 변경
-        if (post_item.getLikedPeople() != null && post_item.getLikedPeople().contains(user.getUid())) {
-            imageButton_like.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.heart2));
-        }
-        else {
-            imageButton_like.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.heart1));
-        }
+        // Firestore에서 데이터를 가져와 UI를 설정
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference postRef = db.collection("postings").document(post_item.getPostId());
 
-        // 좋아요 버튼 동작
-        imageButton_like.setOnClickListener(v -> {
-            if (post_item.getLikedPeople() != null && post_item.getLikedPeople().contains(user.getUid())) {
-                // 좋아요가 되어있는 경우
-                post_item.setLikeCount(post_item.getLikeCount() - 1);
-                imageButton_like.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.heart1));
+        postRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    Object likedPeopleObj = document.get("likedPeople");
+                    List<String> likedPeople = likedPeopleObj instanceof List<?> ? (List<String>) likedPeopleObj : new ArrayList<>();
+                    int likeCount = likedPeople.size();
+
+                    // 좋아요 수와 댓글 수를 반영하기
+                    textView_count.setText("좋아요 " + likeCount + "명 댓글 " + post_item.getCommentCount() + "개");
+
+                    // 좋아요 여부에 따른 이미지 변경
+                    if (likedPeople.contains(user.getUid())) {
+                        // 만약 사용자의 UID가 likedPeople 배열에 있으면 이미지를 heart2로 변경
+                        imageButton_like.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.heart2));
+                    } else {
+                        // 사용자의 UID가 likedPeople 배열에 없으면 이미지를 heart1로 변경
+                        imageButton_like.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.heart1));
+                    }
+                } else {
+                    Log.d("Firestore", "No such document");
+                }
             } else {
-                // 좋아요 안되어있던 경우
-                post_item.setLikeCount(post_item.getLikeCount() + 1);
-                imageButton_like.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.heart2));
+                Log.d("Firestore", "Error getting document: ", task.getException());
             }
+        });
 
-            // 카운트 텍스트 뷰 다시 반영하기
-            textView_count.setText("좋아요 " + post_item.getLikeCount() + "명 댓글 " + post_item.getCommentCount() + "개");
+        imageButton_like.setOnClickListener(v -> {
+            // Firestore에서 현재 likedPeople 리스트 가져오기
+            postRef.get().addOnCompleteListener(likeTask -> {
+                if (likeTask.isSuccessful()) {
+                    DocumentSnapshot likeDocument = likeTask.getResult();
+                    if (likeDocument.exists()) {
+                        Object likedPeopleObj = likeDocument.get("likedPeople");
+                        List<String> likedPeople = likedPeopleObj instanceof List<?> ? (List<String>) likedPeopleObj : new ArrayList<>();
+                        boolean isLiked = likedPeople.contains(user.getUid());
+                        int likeCount = likedPeople.size();
+
+                        if (isLiked) {
+                            // 좋아요가 되어있는 경우 좋아요 취소로 처리
+                            imageButton_like.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.heart1));
+
+                            // likedPeople 배열에서 사용자의 UID 제거
+                            postRef.update("likedPeople", FieldValue.arrayRemove(user.getUid()))
+                                    .addOnSuccessListener(aVoid -> {
+                                        // Firestore 업데이트가 성공한 후 UI 업데이트
+                                        textView_count.setText("좋아요 " + (likeCount - 1) + "명 댓글 " + post_item.getCommentCount() + "개");
+                                    });
+                        } else {
+                            // 좋아요가 안되어있는 경우 좋아요로 처리
+                            imageButton_like.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.heart2));
+
+                            // likedPeople 배열에 사용자의 UID 추가
+                            postRef.update("likedPeople", FieldValue.arrayUnion(user.getUid()))
+                                    .addOnSuccessListener(aVoid -> {
+                                        // Firestore 업데이트가 성공한 후 UI 업데이트
+                                        textView_count.setText("좋아요 " + (likeCount + 1) + "명 댓글 " + post_item.getCommentCount() + "개");
+                                    });
+                        }
+                    } else {
+                        Log.d("Firestore", "No such document");
+                    }
+                } else {
+                    Log.d("Firestore", "Error getting document: ", likeTask.getException());
+                }
+            });
         });
 
         // 프로필 이미지, 이름 클릭 이벤트 -> 프로필 페이지 들어가기
