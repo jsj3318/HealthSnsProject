@@ -3,6 +3,10 @@ package com.example.healthsnsproject;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,19 +16,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
-
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class Fragment_main_1 extends Fragment {
@@ -72,8 +68,6 @@ public class Fragment_main_1 extends Fragment {
 
             // 새로고침 이벤트 처리
             loadData();
-            loadPostId();
-            loadLikeInfo();
 
             // 데이터 로드 완료 후 리프레시 상태 해제
             swipeRefreshLayout.setRefreshing(false);
@@ -83,8 +77,7 @@ public class Fragment_main_1 extends Fragment {
         swipeRefreshLayout.post(() -> {
             swipeRefreshLayout.setRefreshing(true);
             loadData();
-            loadPostId();
-            loadLikeInfo();
+
             swipeRefreshLayout.setRefreshing(false);
         });
 
@@ -111,6 +104,18 @@ public class Fragment_main_1 extends Fragment {
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                         Post_item post = new Post_item();
 
+                        String postId = document.getId();
+                        post.setPostId(postId);
+
+                        int likeCount = Objects.requireNonNull(document.getLong("likeCount")).intValue();
+                        post.setLikeCount(likeCount);
+
+                        if (likeCount == 0 || likeCount == 1) {
+                            post.setPrevLikeCount(0);
+                        }else{
+                            post.setPrevLikeCount(likeCount-1);
+                        }
+
                         String postProfileImageUri = document.getString("postProfileImageUri");
                         String postImageUri = document.getString("postImageUrl");
                         String postUsername = document.getString("postUsername");
@@ -122,9 +127,8 @@ public class Fragment_main_1 extends Fragment {
                         post.setPostUsername(postUsername);
                         post.setDate(date);
                         post.setPostContent(postContent);
-                        post.setCommentCount(post.getCommentCount());
-                        post.setLikeState(post.getLikeState());
-                        post.setLikeCount(post.getLikeCount());
+                        // post.setCommentCount(post.getCommentCount());
+
                         postList.add(post);
                     }
 
@@ -132,65 +136,6 @@ public class Fragment_main_1 extends Fragment {
                     adapter.notifyDataSetChanged();
                 })
                 .addOnFailureListener(e -> Toast.makeText(getContext(), "게시글을 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show());
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    private void loadPostId(){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("postings")
-                .orderBy("date", Query.Direction.DESCENDING) // 내림차순 정렬
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        // 게시글id 가져와서 저장
-                        for (DocumentSnapshot document : task.getResult()) {
-                            Post_item post = new Post_item();
-
-                            String postId = document.getId();
-                            post.setPostId(postId);
-                        }
-                        adapter.notifyDataSetChanged();
-                    }
-                })
-                .addOnFailureListener(e ->
-                        Toast.makeText(getContext(), "게시글 id를 가져오는데 실패했습니다.", Toast.LENGTH_SHORT).show());
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    private void loadLikeInfo() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("postings")
-                .orderBy("date", Query.Direction.DESCENDING) // 내림차순 정렬
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        // 좋아요 상태 저장
-                        for (DocumentSnapshot document : task.getResult()) {
-                            Post_item post = new Post_item();
-                            String postId = document.getId();
-
-                            DocumentReference postRef = db.collection("postings").document(postId);
-                            postRef.get().addOnSuccessListener(documentSnapshot -> {
-                                // likedPeople 데이터 가져오기
-                                List<String> likedPeople = (List<String>) documentSnapshot.get("likedPeople");
-                                post.setLikedPeople(likedPeople);
-                                adapter.notifyDataSetChanged();
-                            });
-
-                            int likeCount = Objects.requireNonNull(document.getLong("likeCount")).intValue();
-                            post.setLikeCount(likeCount);
-
-                            if (likeCount == 0 || likeCount == 1) {
-                                post.setPrevLikeCount(0);
-                            }else{
-                                post.setPrevLikeCount(likeCount-1);
-                            }
-                        }
-                        adapter.notifyDataSetChanged();
-                    }
-                })
-                .addOnFailureListener(e ->
-                        Toast.makeText(getContext(), "데이터를 가져오는데 실패했습니다.", Toast.LENGTH_SHORT).show());
     }
 
 }

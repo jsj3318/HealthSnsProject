@@ -1,5 +1,6 @@
 package com.example.healthsnsproject;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.icu.text.SimpleDateFormat;
 import android.net.Uri;
@@ -18,6 +19,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -26,13 +29,13 @@ import java.util.Locale;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class activity_post extends AppCompatActivity {
-
     Post_item post_item;
-    private CircleImageView circleImageView_postProfileImage;
-    private ImageView imageView_postImage;
-    private TextView textView_postUsername, textView_date, textView_postContent, textView_count;
-    private ImageButton imageButton_like, button_follow;
+    private TextView textView_count;
+    private ImageButton imageButton_like;
 
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,27 +50,23 @@ public class activity_post extends AppCompatActivity {
         Intent intent = getIntent();
         post_item = intent.getParcelableExtra("post_item");
 
-        circleImageView_postProfileImage = findViewById(R.id.postProfileImage);
-        imageView_postImage = findViewById(R.id.postImage);
-        textView_postUsername = findViewById(R.id.textView_postUsername);
-        textView_date = findViewById(R.id.textView_date);
-        textView_postContent = findViewById(R.id.textView_postContent);
+        CircleImageView circleImageView_postProfileImage = findViewById(R.id.postProfileImage);
+        ImageView imageView_postImage = findViewById(R.id.postImage);
+        TextView textView_postUsername = findViewById(R.id.textView_postUsername);
+        TextView textView_date = findViewById(R.id.textView_date);
+        TextView textView_postContent = findViewById(R.id.textView_postContent);
         textView_count = findViewById(R.id.textView_count);
         imageButton_like = findViewById(R.id.imageButton_like);
-        button_follow = findViewById(R.id.button_follow);
+        ImageButton button_follow = findViewById(R.id.button_follow);
 
 
         textView_postUsername.setText(post_item.getPostUsername());
 
         //팔로우 버튼 이벤트
-        button_follow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //팔로우 버튼 클릭 시
-                Toast.makeText(activity_post.this, post_item.getPostUsername() + " 팔로우 버튼 클릭됨", Toast.LENGTH_SHORT).show();
+        button_follow.setOnClickListener(v -> {
+            //팔로우 버튼 클릭 시
+            Toast.makeText(activity_post.this, post_item.getPostUsername() + " 팔로우 버튼 클릭됨", Toast.LENGTH_SHORT).show();
 
-
-            }
         });
 
         //프로필 이미지 뷰 이미지 넣기
@@ -109,7 +108,7 @@ public class activity_post extends AppCompatActivity {
         textView_count.setText("좋아요 " + post_item.getLikeCount() + "명 댓글 " + post_item.getCommentCount() + "개");
 
         // 좋아요 여부에 따른 이미지 변경
-        if (post_item.getLikeState()) {
+        if (post_item.getLikedPeople() != null && post_item.getLikedPeople().contains(user.getUid())) {
             imageButton_like.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.heart2));
         }
         else {
@@ -118,7 +117,7 @@ public class activity_post extends AppCompatActivity {
 
         // 좋아요 버튼 동작
         imageButton_like.setOnClickListener(v -> {
-            if (post_item.getLikeState()) {
+            if (post_item.getLikedPeople() != null && post_item.getLikedPeople().contains(user.getUid())) {
                 // 좋아요가 되어있는 경우
                 post_item.setLikeCount(post_item.getLikeCount() - 1);
                 imageButton_like.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.heart1));
@@ -127,7 +126,7 @@ public class activity_post extends AppCompatActivity {
                 post_item.setLikeCount(post_item.getLikeCount() + 1);
                 imageButton_like.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.heart2));
             }
-            post_item.setLikeState(!post_item.getLikeState());
+
             // 카운트 텍스트 뷰 다시 반영하기
             textView_count.setText("좋아요 " + post_item.getLikeCount() + "명 댓글 " + post_item.getCommentCount() + "개");
         });
@@ -139,7 +138,5 @@ public class activity_post extends AppCompatActivity {
 
         circleImageView_postProfileImage.setOnClickListener(profile_event);
         textView_postUsername.setOnClickListener(profile_event);
-
-
     }
 }

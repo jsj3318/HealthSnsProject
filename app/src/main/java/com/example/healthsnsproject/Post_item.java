@@ -20,26 +20,11 @@ public class Post_item implements Parcelable {
     private int commentCount = 0;
 
     private List<String> likedPeople = new ArrayList<>();
-    private Boolean likeState = false;
+
     private int likeCount = 0;
     private int prevLikeCount = 0;
 
-    public Post_item() {
-        /*
-        setPostProfileImageUri(getPostProfileImageUri());
-        setPostImageUri(getPostImageUri());
-        setPostUsername(getPostUsername());
-        setDate(getDate());
-        setPostContent(getPostContent());
-        setCommentProfileImageUri(getCommentProfileImageUri());
-        setCommentUsername(getCommentUsername());
-        setComment(getComment());
-
-        setLikeState(getLikeState());
-        setLikeCount(getLikeCount());
-        setCommentCount(getCommentCount());
-        */
-    }
+    public Post_item() {}
 
     // getters & setters 방식으로 변경
     public String getPostProfileImageUri() {
@@ -101,12 +86,7 @@ public class Post_item implements Parcelable {
     }
 
 
-    public Boolean getLikeState() {
-        return likeState;
-    }
-    public void setLikeState(Boolean likeState) {
-        this.likeState = likeState;
-    }
+
     public List<String> getLikedPeople() {
         return likedPeople;
     }
@@ -140,8 +120,7 @@ public class Post_item implements Parcelable {
         commentUsername = in.readString();
         comment = in.readString();
         commentCount = in.readInt();
-        byte tmpLikeState = in.readByte();
-        likeState = tmpLikeState == 0 ? null : tmpLikeState == 1;
+
         likeCount = in.readInt();
         prevLikeCount = in.readInt();
     }
@@ -176,7 +155,7 @@ public class Post_item implements Parcelable {
         dest.writeString(commentUsername);
         dest.writeString(comment);
         dest.writeInt(commentCount);
-        dest.writeByte((byte) (likeState == null ? 0 : likeState ? 1 : 2));
+
         dest.writeInt(likeCount);
         dest.writeInt(prevLikeCount);
     }

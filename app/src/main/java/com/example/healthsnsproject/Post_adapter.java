@@ -161,19 +161,20 @@ public class Post_adapter extends RecyclerView.Adapter<Post_adapter.Post_viewHol
                     // 좋아요가 되어있는 경우 좋아요 취소로 처리
                     post.setLikeCount(post.getLikeCount() - 1);
                     imageButton_like.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.heart1));
+
                     // likedPeople 배열에서 사용자의 UID 제거
                     postRef.update("likedPeople", FieldValue.arrayRemove(user.getUid()));
-                } else {
+                }
+                else {
                     // 사용자의 UID가 likedPeople 배열에 없으면
                     // 좋아요가 안되어있는 경우 좋아요로 처리
                     post.setLikeCount(post.getLikeCount() + 1);
                     imageButton_like.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.heart2));
+
                     // likedPeople 배열에 사용자의 UID 추가
                     postRef.update("likedPeople", FieldValue.arrayUnion(user.getUid()));
                 }
-
-                // 좋아요 상태 반전
-                post.setLikeState(!post.getLikeState());
+                updateLikeInfo(post);
 
                 // 카운트 텍스트 뷰 다시 반영
                 textView_count.setText("좋아요 " + post.getLikeCount() + "명 댓글 " + post.getCommentCount() + "개");
