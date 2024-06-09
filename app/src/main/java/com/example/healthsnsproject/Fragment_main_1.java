@@ -107,15 +107,6 @@ public class Fragment_main_1 extends Fragment {
                         String postId = document.getId();
                         post.setPostId(postId);
 
-                        int likeCount = Objects.requireNonNull(document.getLong("likeCount")).intValue();
-                        post.setLikeCount(likeCount);
-
-                        if (likeCount == 0 || likeCount == 1) {
-                            post.setPrevLikeCount(0);
-                        }else{
-                            post.setPrevLikeCount(likeCount-1);
-                        }
-
                         String postProfileImageUri = document.getString("postProfileImageUri");
                         String postImageUri = document.getString("postImageUrl");
                         String postUsername = document.getString("postUsername");

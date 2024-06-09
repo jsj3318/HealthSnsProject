@@ -134,7 +134,6 @@ public class Fragment_main_2 extends Fragment {
         }
         post.put("date", date);
         post.put("likedPeople", null);
-        post.put("likeCount", 0);
 
 
         firestore.collection("postings").add(post)
