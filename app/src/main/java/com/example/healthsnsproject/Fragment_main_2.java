@@ -44,7 +44,7 @@ public class Fragment_main_2 extends Fragment {
     private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private final String postUsername = Objects.requireNonNull(user).getDisplayName() + "  (@"
                                     + Objects.requireNonNull(user.getEmail()).split("@")[0]+")";
-    private String postProfileImageUri = String.valueOf(user.getPhotoUrl());
+    private String postProfileImageUri;
 
     @Nullable
     @Override
@@ -124,7 +124,7 @@ public class Fragment_main_2 extends Fragment {
     // Firestore에 게시글 저장 메서드
     private void savePost(String postImageUrl, String postContent, String date) {
         Map<String, Object> post = new HashMap<>();
-        post.put("postProfileImageUri", postProfileImageUri);
+        post.put("postProfileImageUri", String.valueOf(user.getPhotoUrl()));
         post.put("postUsername", postUsername);
         if (postImageUrl != null) {
             post.put("postImageUrl", postImageUrl);  // 이미지 URL이 있는 경우 추가
